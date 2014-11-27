@@ -1,0 +1,39 @@
+apply plugin: 'idea' // IntelliJ plugin
+apply plugin: 'war' // war plugin
+
+scoreCompatability=1.7
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://uk.maven.org/maven2"
+    }
+}
+
+ext {
+    springVersion = "4.1.1.RELEASE"
+}
+
+dependencies {
+
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.mockito', name:'mockito-all', version :"1.9.5"
+    testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.1'
+
+    compile group: 'org.springframework', name: 'spring-aop', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-aspects', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-beans', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-context', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-core', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-expression', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-test', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-web', version: "$springVersion"
+    compile group: 'org.springframework', name: 'spring-webmvc', version: "$springVersion"
+
+    providedCompile "javax.servlet:javax.servlet-api:3.1.0"
+
+}
+
+jar {
+    manifest.attributes 'Class-Path':configurations.runtime.files.collect { "../lib/${it.name}" }
+}
