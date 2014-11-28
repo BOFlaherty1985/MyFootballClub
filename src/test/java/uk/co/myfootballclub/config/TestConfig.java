@@ -9,6 +9,7 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -16,24 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Java Application Configuration Class (servlet.xml)
+ * Test Configuration Setup
  *
  * @author Benjamin O'Flaherty
- * @date Created on: 27/11/2014
+ * @date Created on: 28/11/2014
  * @project MyFootballClub
  */
-@Configuration      //Marks this class as configuration
+@Configuration
 @ComponentScan("uk.co.myfootballclub")    //Specifies which package to scan
-public class ApplicationConfig {
+@EnableWebMvc   //Enables Spring's annotations
+public class TestConfig {
 
     @Autowired
     private ObjectMapper objectMapper;
 
-
-    /**
-     * Bean Definition for RestTemplate with Proxy setup.
-     * @return restTemplate
-     */
     @Bean
     public RestTemplate restTemplate() {
 
@@ -55,10 +52,6 @@ public class ApplicationConfig {
         return restTemplate;
     }
 
-    /**
-     * Bean definition for Jackson ObjectMapper.
-     * @return objectMapper
-     */
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();

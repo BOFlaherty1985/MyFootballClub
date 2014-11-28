@@ -3,7 +3,6 @@ package uk.co.myfootballclub.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,24 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Java Application Configuration Class (servlet.xml)
+ * Description Here
  *
  * @author Benjamin O'Flaherty
- * @date Created on: 27/11/2014
+ * @date Created on: 28/11/2014
  * @project MyFootballClub
  */
-@Configuration      //Marks this class as configuration
-@ComponentScan("uk.co.myfootballclub")    //Specifies which package to scan
-public class ApplicationConfig {
+@Configuration
+public class RestTestConfig {
 
     @Autowired
     private ObjectMapper objectMapper;
 
-
-    /**
-     * Bean Definition for RestTemplate with Proxy setup.
-     * @return restTemplate
-     */
     @Bean
     public RestTemplate restTemplate() {
 
@@ -55,13 +48,10 @@ public class ApplicationConfig {
         return restTemplate;
     }
 
-    /**
-     * Bean definition for Jackson ObjectMapper.
-     * @return objectMapper
-     */
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
 
 }
+

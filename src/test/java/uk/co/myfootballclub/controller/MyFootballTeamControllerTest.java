@@ -1,28 +1,97 @@
 package uk.co.myfootballclub.controller;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-import uk.co.myfootballclub.config.model.Team;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import uk.co.myfootballclub.config.TestConfig;
+import uk.co.myfootballclub.config.WebInitializer;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Entry page that displays a users football team and displays the data.
+ * Description Here
  *
  * @author Benjamin O'Flaherty
- * @date Created on: 27/11/2014
+ * @date Created on: 28/11/2014
  * @project MyFootballClub
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {TestConfig.class, WebInitializer.class})
+@WebAppConfiguration
 public class MyFootballTeamControllerTest {
 
+    @Mock
+    private MockMvc mockMvc;
+
+    @Autowired
+    private MyFootballTeamController controller;
+
+    @Before
+    public void setUp() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/views/");
+        viewResolver.setSuffix(".jsp");
+
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setViewResolvers(viewResolver)
+                .build();
+
+    }
+
     @Test
-    public void test() {
+    public void verifyMyFootballTeamControllerDefaultRequestMappingIsValidAndReturnsStatus200() throws Exception {
 
-        RestTemplate restTemplate = new RestTemplate();
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk());
 
-        Team myTeam = restTemplate.getForObject("http://www.football-data.org/teams/563",
-                Team.class);
+    }
 
-        System.out.println(myTeam.toString());
+    @Test
+    public void verifyMyFootballTeamControllerDefaultMappingReturnsViewNameDisplayFootballTeam() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("displayFootballTeam"));
+
+    }
+
+    @Test
+    public void verifyMyFootballTeamControllerPageDisplayContainsTeamModelObject() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("displayFootballTeam"))
+                .andExpect(model().attributeExists("team"));
+
+    }
+
+    @Test
+    public void verifyMyFootballTeamControllerPageDisplayContainsFixtureModelObject() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("displayFootballTeam"))
+                .andExpect(model().attributeExists("fixture"));
+
+    }
+
+    @Test
+    public void verifyMyFootballTeamControllerPageDisplayContainsLeagueModelObject() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("displayFootballTeam"))
+                .andExpect(model().attributeExists("league"));
+
 
     }
 

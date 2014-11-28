@@ -1,6 +1,7 @@
 package uk.co.myfootballclub.config;
 
 import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -20,14 +21,18 @@ public class WebInitializer implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
 
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-        ctx.register(ApplicationConfig.class);
+        ctx.setConfigLocations(new String[]{"uk.co.myfootballclub.config"});
 
         ctx.setServletContext(servletContext);
 
-        ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
+        servletContext.addListener(new ContextLoaderListener(ctx));
+
+        ServletRegistration.Dynamic servlet = servletContext.addServlet("MyFootballClub", new DispatcherServlet(ctx));
         servlet.addMapping("/");
         servlet.setLoadOnStartup(1);
 
     }
+
+
 
 }

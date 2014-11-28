@@ -1,11 +1,11 @@
-package uk.co.myfootballclub.config.model;
+package uk.co.myfootballclub.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * Created by BO034731 on 27/11/14.
-        */
 
+/**
+ * Team Model Class
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Team {
 
