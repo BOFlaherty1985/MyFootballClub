@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 /**
- * Team Model Class
+ * Team Model Object
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Team {

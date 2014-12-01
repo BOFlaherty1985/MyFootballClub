@@ -29,6 +29,8 @@ public class ApplicationConfig {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final String PROXY_HOST = "127.0.0.1";
+    private static final int PROXY_PORT = 5865;
 
     /**
      * Bean Definition for RestTemplate with Proxy setup.
@@ -39,8 +41,7 @@ public class ApplicationConfig {
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 5865));
-
+        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(PROXY_HOST, PROXY_PORT));
         requestFactory.setProxy(proxy);
 
         List<HttpMessageConverter<?>> converters = new ArrayList<HttpMessageConverter<?>>();
