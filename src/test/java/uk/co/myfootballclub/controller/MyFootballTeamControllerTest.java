@@ -16,16 +16,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
+import uk.co.myfootballclub.model.League;
 import uk.co.myfootballclub.service.FixturesByDayService;
+import uk.co.myfootballclub.service.LeagueByMatchDayService;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Description Here
+ * My Football Team Controller
  *
  * @author Benjamin O'Flaherty
  * @date Created on: 28/11/2014
@@ -44,6 +47,8 @@ public class MyFootballTeamControllerTest {
 
     @Mock
     private FixturesByDayService fixturesByDaysService;
+    @Mock
+    private LeagueByMatchDayService leagueByMatchDayService;
 
     @Before
     public void setUp() {
@@ -109,10 +114,12 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsLeagueModelObject() throws Exception {
 
+        when(leagueByMatchDayService.retrieveLeagueStandings(354)).thenReturn(new League());
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("displayFootballTeam"))
-                .andExpect(model().attributeExists("league"));
+                .andExpect(model().attributeExists("leagueStandings"));
 
 
     }
@@ -124,6 +131,16 @@ public class MyFootballTeamControllerTest {
                 .andExpect(status().isOk());
 
         verify(fixturesByDaysService, atLeastOnce()).getFixturesByDays(anyInt(), Matchers.<String> any(), anyInt());
+
+    }
+
+    @Test
+    public void verifyLeagueByMatchDayServiceHasBeenCalledAtLeastOnce() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk());
+
+        verify(leagueByMatchDayService, atLeastOnce()).retrieveLeagueStandings(anyInt());
 
     }
 

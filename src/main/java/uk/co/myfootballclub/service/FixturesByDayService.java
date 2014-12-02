@@ -21,7 +21,7 @@ import static java.lang.String.format;
 @Service
 public class FixturesByDayService {
 
-    private static final String FOOTBALL_DATA_URL = "http://www.football-data.org";
+    private static final String FIXTURES_DATA_URL = "http://www.football-data.org";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -40,7 +40,7 @@ public class FixturesByDayService {
         Fixture[] fixtures;
 
         if(fixtureType.equals("n") || fixtureType.equals("p")) {
-            fixtures = restTemplate.getForObject(format("%s/teams/%s/fixtures?timeFrame=%s%s", FOOTBALL_DATA_URL,
+            fixtures = restTemplate.getForObject(format("%s/teams/%s/fixtures?timeFrame=%s%s", FIXTURES_DATA_URL,
                     teamId, fixtureType, numberOfDays), Fixture[].class);
         } else {
             throw new InvalidFixtureTypeException("Invalid FixtureType has been entered.");
