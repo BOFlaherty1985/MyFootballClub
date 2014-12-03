@@ -5,14 +5,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import uk.co.myfootballclub.model.LeagueRanking;
+import uk.co.myfootballclub.model.league.LeagueRanking;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Description Here
+ * League Ranking Deserializer (JSON)
  *
  * @author Benjamin O'Flaherty
  * @date Created on: 02/12/2014

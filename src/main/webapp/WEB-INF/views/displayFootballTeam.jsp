@@ -8,6 +8,14 @@
 
         My Football Team Information Goes Here
 
+        <br/>
+        <c:out value="${weatherForFixture.name}"/><br/>
+        <c:out value="${weatherForFixture.weather.main}"/> - <c:out value="${weatherForFixture.weather.description}"/><br/>
+        Temp: <c:out value="${weatherForFixture.main.temp}"/><br/>
+        Temp Min: <c:out value="${weatherForFixture.main.temp_min}"/><br/>
+        Temp Max: <c:out value="${weatherForFixture.main.temp_max}"/><br/>
+
+        <br/>
         <c:forEach var="fixture" items="${upcomingFixtures}">
             <br/>
             <c:out value="${fixture.homeTeam}"/> <b>vs.</b> <c:out value="${fixture.awayTeam}"/>

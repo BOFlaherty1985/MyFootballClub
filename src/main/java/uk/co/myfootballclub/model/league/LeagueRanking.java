@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.model;
+package uk.co.myfootballclub.model.league;
 
 /**
  * League Ranking Model Object.

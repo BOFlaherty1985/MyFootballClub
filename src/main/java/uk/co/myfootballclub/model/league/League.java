@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.model;
+package uk.co.myfootballclub.model.league;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

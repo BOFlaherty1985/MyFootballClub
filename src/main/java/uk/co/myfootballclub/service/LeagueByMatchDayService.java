@@ -11,7 +11,7 @@ package uk.co.myfootballclub.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import uk.co.myfootballclub.model.League;
+import uk.co.myfootballclub.model.league.League;
 
 import static java.lang.String.format;
 
@@ -32,4 +32,5 @@ public class LeagueByMatchDayService {
         return restTemplate.getForObject(format("%s/%s/ranking?matchday=%s",
                 LEAGUE_STANDING_DATA_URL, leagueId, matchDay), League.class);
     }
+
 }

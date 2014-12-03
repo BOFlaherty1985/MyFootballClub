@@ -16,14 +16,17 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
-import uk.co.myfootballclub.model.League;
+import uk.co.myfootballclub.model.Fixture;
+import uk.co.myfootballclub.model.league.League;
+import uk.co.myfootballclub.model.weather.WeatherFixture;
 import uk.co.myfootballclub.service.FixturesByDayService;
 import uk.co.myfootballclub.service.LeagueByMatchDayService;
+import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
+
+import java.util.ArrayList;
 
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,6 +52,8 @@ public class MyFootballTeamControllerTest {
     private FixturesByDayService fixturesByDaysService;
     @Mock
     private LeagueByMatchDayService leagueByMatchDayService;
+    @Mock
+    private WeatherForecastForFixtureService weatherForecastForFixtureService;
 
     @Before
     public void setUp() {
@@ -61,6 +66,14 @@ public class MyFootballTeamControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setViewResolvers(viewResolver)
                 .build();
+
+    }
+
+    @Test
+    public void assertThatInvalidRequestMappingResultsInErrorStatus404() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeams"))
+                .andExpect(status().isNotFound());
 
     }
 
@@ -144,5 +157,25 @@ public class MyFootballTeamControllerTest {
 
     }
 
+    @Test
+    public void verifyWeatherForecastForFixtureServiceHasBeenCalledOnetime() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk());
+        verify(weatherForecastForFixtureService, atLeastOnce()).retrieveWeatherForecastForFixture(new ArrayList<Fixture>());
+
+    }
+
+    @Test
+    public void verifyMyFootballTeamControllerPageDisplayContainsWeatherForFixtureModelObject() throws Exception {
+
+        when(weatherForecastForFixtureService.retrieveWeatherForecastForFixture(new ArrayList<Fixture>()))
+                .thenReturn(new WeatherFixture());
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("displayFootballTeam"))
+                .andExpect(model().attributeExists("weatherForFixture"));
+    }
 
 }
