@@ -1,7 +1,7 @@
 package uk.co.myfootballclub.exception;
 
 /**
- * Description Here
+ * Invalid Fixture Type Exception
  *
  * @author Benjamin O'Flaherty
  * @date Created on: 01/12/2014

@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -19,9 +20,7 @@ import uk.co.myfootballclub.model.league.LeagueRanking;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes={TestConfig.class, WebInitializer.class})
-public class LeagueByMatchDayServiceTest {
+public class LeagueByMatchDayServiceTest extends ServiceTest {
 
     public static final int PREMIER_LEAGUE_ID = 354;
 
@@ -43,6 +42,9 @@ public class LeagueByMatchDayServiceTest {
     private LeagueByMatchDayService service;
     @Mock
     private RestTemplate restTemplate;
+    @Mock
+    ResponseEntity<League> responseEntity = new ResponseEntity<League>(HttpStatus.OK);
+
 
     @Before
     public void setUp() {
@@ -52,8 +54,9 @@ public class LeagueByMatchDayServiceTest {
     @Test
     public void assertThatRetrieveLeagueStandingSsNotNull() {
 
-        when(restTemplate.getForObject("http://www.football-data.org/soccerseasons/100/ranking", League.class
-            )).thenReturn(new League());
+        when(responseEntity.getBody()).thenReturn(new League());
+        when(restTemplate.exchange("http://www.football-data.org/soccerseasons/100/ranking", HttpMethod.GET, mockRequestHeaders(), League.class
+        )).thenReturn(responseEntity);
 
         assertNotNull("retrieveLeagueStanding() should not return a null value.",
                 service.retrieveLeagueStandings(100));
@@ -63,7 +66,8 @@ public class LeagueByMatchDayServiceTest {
     @Test
     public void assertThatLeagueByMatchDayServiceDoesNotReturnNullValue() {
 
-        setDefaultRESTLeagueResult(354);
+        setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         assertNotNull("retrieveLeagueStandingByMatchDay() should not return null value.",
                 service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1));
@@ -74,6 +78,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertThatRetrieveLeagueStandingByMatchDayReturnsAnInstanceOfLeague() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -85,9 +90,11 @@ public class LeagueByMatchDayServiceTest {
     public void verifyRestTemplateGetForObjectMethodHasBeenCalled() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(new League());
 
         service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
-        verify(restTemplate, times(1)).getForObject("http://www.football-data.org/soccerseasons/354/ranking?matchday=1", League.class);
+        verify(restTemplate, times(1)).exchange("http://www.football-data.org/soccerseasons/354/ranking?matchday=1",
+                HttpMethod.GET, mockRequestHeaders(), League.class);
 
     }
 
@@ -95,6 +102,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectContainsALeagueName() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
         assertTrue("League getLeague() has value.",
@@ -106,6 +114,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectContainsARanking() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
         assertTrue("League getMatchday() has a value that isn't zero.",
@@ -117,6 +126,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectIsNotNull() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
         assertTrue("League has an instance of LeagueRanking and LeagueRanking is not null.",
@@ -128,6 +138,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectContainsAValidRank() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -144,6 +155,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectContainsAValidTeam() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -161,6 +173,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectContainsAValidCrestURL() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -178,6 +191,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectContainsAValidPoints() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -194,6 +208,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectContainsAValidGoals() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -207,9 +222,10 @@ public class LeagueByMatchDayServiceTest {
     }
 
     @Test
-         public void assertReturnedLeagueObjectRankingObjectContainsAValidGoalsAgainst() {
+    public void assertReturnedLeagueObjectRankingObjectContainsAValidGoalsAgainst() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -226,6 +242,7 @@ public class LeagueByMatchDayServiceTest {
     public void assertReturnedLeagueObjectRankingObjectContainsAValidGoalDifference() {
 
         setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
+        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
@@ -282,10 +299,12 @@ public class LeagueByMatchDayServiceTest {
 
 
     private void setDefaultRESTLeagueResult(int leagueId) {
-        when(restTemplate.getForObject("http://www.football-data.org/soccerseasons/" + leagueId + "/ranking?matchday=1", League.class)).thenReturn(setupDefaultLeagueObject());
+        when(restTemplate.exchange("http://www.football-data.org/soccerseasons/" + leagueId + "/ranking?matchday=1", HttpMethod.GET, mockRequestHeaders(),
+                League.class)).thenReturn(responseEntity);
     }
 
     private League setupDefaultLeagueObject() {
+
 
         League league = new League();
         league.setLeague("Default League Name");

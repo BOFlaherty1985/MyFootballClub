@@ -2,57 +2,180 @@
 <html>
     <head>
         <title>My Football Team</title>
+
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/bootstrap/js/bootstrap.min.js"></script>
+        <link href="${pageContext.request.contextPath}/resources/bootstrap/css/bootstrap.css" rel="stylesheet">
+
     </head>
 
     <body>
 
-        My Football Team Information Goes Here
+        <div class="container">
 
-        <br/>
-        <c:out value="${weatherForFixture.name}"/><br/>
-        <c:out value="${weatherForFixture.weather.main}"/> - <c:out value="${weatherForFixture.weather.description}"/><br/>
-        Temp: <c:out value="${weatherForFixture.main.temp}"/><br/>
-        Temp Min: <c:out value="${weatherForFixture.main.temp_min}"/><br/>
-        Temp Max: <c:out value="${weatherForFixture.main.temp_max}"/><br/>
+            <div class="row">
 
-        <br/>
-        <c:forEach var="fixture" items="${upcomingFixtures}">
-            <br/>
-            <c:out value="${fixture.homeTeam}"/> <b>vs.</b> <c:out value="${fixture.awayTeam}"/>
-        </c:forEach>
+                <div class="col-md-1"></div>
 
-        <br/>
-        <br/>
-        <c:forEach var="result" items="${recentResults}">
-            <br/>
-            <c:out value="${result.homeTeam}"/> (<c:out value="${result.goalsHomeTeam}"/>) <b>vs.</b> (<c:out value="${result.goalsAwayTeam}"/>)  <c:out value="${result.awayTeam}"/>
-        </c:forEach>
+                <div class="col-md-10">
+                    <p class="text-center">
+                        <img src="http://upload.wikimedia.org/wikipedia/en/e/e0/West_Ham_United_FC.svg"
+                             alt="..." class="img-thumbnail" style="height: 200px; width: 200px">
+                    </p>
+                    <p>
+                        <h2>
+                            <b>West Ham United FC</b>
+                        </h2>
+                    </p>
+                </div>
 
-        <br/>
-        <br/>
-        <c:out value="${leagueStandings.league}"/><br/>
-        <c:out value="${leagueStandings.matchday}"/><br/>
+                <div class="col-md-1"></div>
 
-        <table>
-            <tr>
-                <th>Position</th>
-                <th>Team Name</th>
-                <th>GF</th>
-                <th>GA</th>
-                <th>GD</th>
-                <th>Points</th>
-            </tr>
-            <c:forEach var="ranking" items="${leagueStandings.ranking}">
-                <tr>
-                    <td><c:out value="${ranking.rank}"/></td>
-                    <td><c:out value="${ranking.team}"/></td>
-                    <td><c:out value="${ranking.goals}"/></td>
-                    <td><c:out value="${ranking.goalsAgainst}"/></td>
-                    <td><c:out value="${ranking.goalDifference}"/></td>
-                    <td><c:out value="${ranking.points}"/></td>
-                </tr>
-            </c:forEach>
-        </table>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-1"></div>
+
+                <div class="col-md-10">
+                    <p>
+                        <h4>
+                            <b>Next Fixture</b>
+                        </h4>
+                    </p>
+                    <p>
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <c:out value="${teamsNextFixture.homeTeam}"/>
+                                </td>
+                                <td>
+                                    <b>vs.</b>
+                                </td>
+                                <td>
+                                    <c:out value="${teamsNextFixture.awayTeam}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </p>
+                    <p>
+                        <b>Location: </b><c:out value="${weatherForFixture.name}"/><br/>
+                        <b>Forecast: </b><c:out value="${weatherForFixture.weather.main}"/> - <c:out value="${weatherForFixture.weather.description}"/>
+                        <b>Temperature: </b>: <c:out value="${weatherForFixture.main.temp}"/> (Min: <c:out value="${weatherForFixture.main.temp_min}"/> / Max: <c:out value="${weatherForFixture.main.temp_max}"/>)<br/>
+                    </p>
+                </div>
+
+                <div class="col-md-1"></div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-1"></div>
+
+                <div class="col-md-5">
+                    <p>
+                        <h4>
+                            <b>Upcoming Fixtures</b>
+                        </h4>
+                    </p>
+
+                    <p>
+                        <table class="table">
+                            <c:forEach var="fixture" items="${upcomingFixtures}">
+                                <tr>
+                                    <td>
+                                        <c:out value="${fixture.homeTeam}"/>
+                                    </td>
+                                    <td>
+                                        <b>vs.</b>
+                                    </td>
+                                    <td>
+                                        <c:out value="${fixture.awayTeam}"/>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </p>
+
+                </div>
+
+                <div class="col-md-5">
+                    <p>
+                        <h4>
+                            <b>Previous Results</b>
+                        </h4>
+                    </p>
+
+                    <p>
+                        <table class="table">
+                            <c:forEach var="result" items="${recentResults}">
+                                <tr>
+                                    <td>
+                                        <c:out value="${result.homeTeam}"/>
+                                    </td>
+                                    <td>
+                                        <c:out value="${result.goalsHomeTeam}"/>
+                                    </td>
+                                    <td>
+                                        <b>vs.</b>
+                                    </td>
+                                    <td>
+                                        <c:out value="${result.goalsAwayTeam}"/>
+                                    </td>
+                                    <td>
+                                        <c:out value="${result.awayTeam}"/>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </p>
+
+                </div>
+
+                <div class="col-md-1"></div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-1"></div>
+
+                <div class="col-md-10">
+                    <p>
+                        <h3>
+                            <b><c:out value="${leagueStandings.league}"/> Standings</b>
+                        </h3>
+                    </p>
+
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Position</th>
+                            <th>Team Name</th>
+                            <th>GF</th>
+                            <th>GA</th>
+                            <th>GD</th>
+                            <th>Points</th>
+                        </tr>
+                        <c:forEach var="ranking" items="${leagueStandings.ranking}">
+                            <tr>
+                                <td><c:out value="${ranking.rank}"/></td>
+                                <td><c:out value="${ranking.team}"/></td>
+                                <td><c:out value="${ranking.goals}"/></td>
+                                <td><c:out value="${ranking.goalsAgainst}"/></td>
+                                <td><c:out value="${ranking.goalDifference}"/></td>
+                                <td><c:out value="${ranking.points}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+
+                <div class="col-md-1"></div>
+
+            </div>
+
+        </div>
+
 
     </body>
 

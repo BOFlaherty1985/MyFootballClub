@@ -16,14 +16,13 @@ import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.weather.WeatherDetails;
-import uk.co.myfootballclub.model.weather.WeatherType;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
-
-import java.util.ArrayList;
-import java.util.List;
+import uk.co.myfootballclub.model.weather.WeatherType;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Weather Forecast For Given Fixture
@@ -105,38 +104,38 @@ public class WeatherForecastForFixtureServiceTest {
     private Environment environment;
 
     @Mock
-    List<Fixture> fixtureList;
+    Fixture nextFixture;
 
     @Test
     public void verifyThatWeatherForecastForFixtureServiceMethodDoesNotReturnNull() throws Exception {
 
-    List<Fixture> fixtureList = mockFixtureList();
+    when(nextFixture.getHomeTeam()).thenReturn("Test Team");
+    when(environment.getProperty("TestTeam")).thenReturn("testLocation,gb");
+
+    when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=testLocation,gb&units=metric",
+            WeatherFixture.class)).thenReturn(new WeatherFixture());
 
     assertNotNull("retrieveWeatherForecastForFixture() return type is not null.",
-            service.retrieveWeatherForecastForFixture(fixtureList));
+            service.retrieveWeatherForecastForFixture(nextFixture));
 
     }
 
     @Test
     public void assertThatWeatherForecastForFixtureServicesReturnsObjectOfTypeWeatherFixture() throws Exception {
 
-      List<Fixture> fixtureList = mockFixtureList();
+        when(nextFixture.getHomeTeam()).thenReturn("Test Team");
+        when(environment.getProperty("TestTeam")).thenReturn("testLocation,gb");
 
-      Object object = service.retrieveWeatherForecastForFixture(fixtureList);
+        when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=testLocation,gb&units=metric",
+                WeatherFixture.class)).thenReturn(new WeatherFixture());
+
+      Object object = service.retrieveWeatherForecastForFixture(nextFixture);
       assertTrue("retrieveWeatherForecastForFixture() return is of type Weather.", object instanceof WeatherFixture);
 
     }
 
     @Test
-    public void verifyRetrieveWeatherForecastForFixturesMethodsHasListOfFixturesParameter() throws Exception {
-
-      List<Fixture> fixtureList = mockFixtureList();
-      service.retrieveWeatherForecastForFixture(fixtureList);
-
-    }
-
-    @Test
-    public void throwExceptionWhenListOfFixturesParameterIsNull() {
+    public void throwExceptionWhenFixtureParameterIsNull() {
 
         try {
             service.retrieveWeatherForecastForFixture(null);
@@ -148,21 +147,23 @@ public class WeatherForecastForFixtureServiceTest {
     }
 
     @Test
-    public void verifyThatTheFirstFixtureInListIsRetrieved() throws Exception {
+    public void verifyThatTheGetHomeTeamMethodIsCalledOnNextFixtureObject() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("CWest ham United FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("West Ham United FC");
 
-        service.retrieveWeatherForecastForFixture(fixtureList);
-        verify(fixtureList, times(1)).get(0);
+        service.retrieveWeatherForecastForFixture(nextFixture);
+        verify(nextFixture, times(1)).getHomeTeam();
 
     }
+
+
 
     @Test
     public void verifyThatEnvironmentGetPropertyIsCalledWithValueOfHomeTeamForNextFixture() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("ManchesterUnited FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("ManchesterUnited FC");
 
-        service.retrieveWeatherForecastForFixture(fixtureList);
+        service.retrieveWeatherForecastForFixture(nextFixture);
         verify(environment, times(1)).getProperty("ManchesterUnitedFC");
 
     }
@@ -170,10 +171,10 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void verifyServiceMethodHasAnInstanceOfRestTemplate() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Newcastle United"));
+        when(nextFixture.getHomeTeam()).thenReturn("Newcastle United");
         when(environment.getProperty("NewcastleUnited")).thenReturn("newcastle upon Tyne,gb");
 
-        service.retrieveWeatherForecastForFixture(fixtureList);
+        service.retrieveWeatherForecastForFixture(nextFixture);
         verify(restTemplate, times(1)).getForObject(
                 "http://api.openweathermap.org/data/2.5/weather?q=newcastle upon Tyne,gb&units=metric",
                 WeatherFixture.class);
@@ -182,10 +183,10 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void givenHomeTeamIsEqualToStokeCityRestTemplateApiUrlCityShouldEqualStokeOnTrent() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Stoke City FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Stoke City FC");
         when(environment.getProperty("StokeCityFC")).thenReturn("stoke-on-Trent,gb");
 
-        service.retrieveWeatherForecastForFixture(fixtureList);
+        service.retrieveWeatherForecastForFixture(nextFixture);
         verify(restTemplate, times(1)).getForObject(
                 "http://api.openweathermap.org/data/2.5/weather?q=stoke-on-Trent,gb&units=metric",
                 WeatherFixture.class);
@@ -194,7 +195,7 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void assertThatReturnedWeatherObjectHasTheCorrectLocationValueAsNameAttribute() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Stoke City FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Stoke City FC");
         when(environment.getProperty("StokeCityFC")).thenReturn("stoke-on-Trent,gb");
 
         WeatherFixture weatherResult = mockWeatherFixture("Stoke-on-Trent", null, "light rain");
@@ -202,7 +203,7 @@ public class WeatherForecastForFixtureServiceTest {
         when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=stoke-on-Trent,gb&units=metric",
                 WeatherFixture.class)).thenReturn(weatherResult);
 
-        WeatherFixture weather = service.retrieveWeatherForecastForFixture(fixtureList);
+        WeatherFixture weather = service.retrieveWeatherForecastForFixture(nextFixture);
         assertEquals("WeatherFixture has location (name) value of Stoke-on-Trent", "Stoke-on-Trent", weather.getName());
 
     }
@@ -210,7 +211,7 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void assertThatReturnedWeatherObjectHasValidWeatherType() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Everton FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Everton FC");
         when(environment.getProperty("EvertonFC")).thenReturn("liverpool,gb");
 
         WeatherFixture weatherResult = mockWeatherFixture("Liverpool", "Mist", "mist");
@@ -218,7 +219,7 @@ public class WeatherForecastForFixtureServiceTest {
         when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=liverpool,gb&units=metric",
                 WeatherFixture.class)).thenReturn(weatherResult);
 
-        WeatherFixture weather = service.retrieveWeatherForecastForFixture(fixtureList);
+        WeatherFixture weather = service.retrieveWeatherForecastForFixture(nextFixture);
         assertEquals("WeatherFixture has Type Of Weather (weather.main) of Value Mist", "Mist",
                 weather.getWeather().getMain());
 
@@ -227,7 +228,7 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void assertThatReturnedWeatherObjectHasValidWeatherTypeDescription() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Hull City FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Hull City FC");
         when(environment.getProperty("HullCityFC")).thenReturn("hull,gb");
 
         WeatherFixture weatherResult = mockWeatherFixture("Hull", "Rain", "light rain");
@@ -235,7 +236,7 @@ public class WeatherForecastForFixtureServiceTest {
         when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=hull,gb&units=metric",
                 WeatherFixture.class)).thenReturn(weatherResult);
 
-        WeatherFixture weather = service.retrieveWeatherForecastForFixture(fixtureList);
+        WeatherFixture weather = service.retrieveWeatherForecastForFixture(nextFixture);
         assertEquals("WeatherFixture has Type Of Weather Description (weather.description) of value light rain", "light rain",
                 weather.getWeather().getDescription());
 
@@ -244,7 +245,7 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void assertThatReturnedWeatherObjectHasValidWeatherMainTemp() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Hull City FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Hull City FC");
         when(environment.getProperty("HullCityFC")).thenReturn("hull,gb");
 
         WeatherFixture weatherResult = mockWeatherFixture("Hull", "Rain", "light rain");
@@ -252,7 +253,7 @@ public class WeatherForecastForFixtureServiceTest {
         when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=hull,gb&units=metric",
                 WeatherFixture.class)).thenReturn(weatherResult);
 
-        WeatherFixture weather = service.retrieveWeatherForecastForFixture(fixtureList);
+        WeatherFixture weather = service.retrieveWeatherForecastForFixture(nextFixture);
         assertTrue("WeatherFixture has Temp (main.temp) of value 10.0", weather.getMain().getTemp() == 10D);
 
     }
@@ -260,7 +261,7 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void assertThatReturnedWeatherObjectHasValidWeatherMainTempMax() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Hull City FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Hull City FC");
         when(environment.getProperty("HullCityFC")).thenReturn("hull,gb");
 
         WeatherFixture weatherResult = mockWeatherFixture("Hull", "Rain", "light rain");
@@ -268,7 +269,7 @@ public class WeatherForecastForFixtureServiceTest {
         when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=hull,gb&units=metric",
                 WeatherFixture.class)).thenReturn(weatherResult);
 
-        WeatherFixture weather = service.retrieveWeatherForecastForFixture(fixtureList);
+        WeatherFixture weather = service.retrieveWeatherForecastForFixture(nextFixture);
         assertTrue("WeatherFixture has Temp (main.temp_max) of value 20.0", weather.getMain().getTemp_max() == 20D);
 
     }
@@ -276,7 +277,7 @@ public class WeatherForecastForFixtureServiceTest {
     @Test
     public void assertThatReturnedWeatherObjectHasValidWeatherMainTempMin() throws Exception {
 
-        when(fixtureList.get(0)).thenReturn(mockFixtureObject("Hull City FC"));
+        when(nextFixture.getHomeTeam()).thenReturn("Hull City FC");
         when(environment.getProperty("HullCityFC")).thenReturn("hull,gb");
 
         WeatherFixture weatherResult = mockWeatherFixture("Hull", "Rain", "light rain");
@@ -284,7 +285,7 @@ public class WeatherForecastForFixtureServiceTest {
         when(restTemplate.getForObject("http://api.openweathermap.org/data/2.5/weather?q=hull,gb&units=metric",
                 WeatherFixture.class)).thenReturn(weatherResult);
 
-        WeatherFixture weather = service.retrieveWeatherForecastForFixture(fixtureList);
+        WeatherFixture weather = service.retrieveWeatherForecastForFixture(nextFixture);
         assertTrue("WeatherFixture has Temp (main.temp_max) of value 0.0", weather.getMain().getTemp_min() == 0D);
 
     }
@@ -315,10 +316,6 @@ public class WeatherForecastForFixtureServiceTest {
         nextFixture.setHomeTeam(homeTeam);
 
         return nextFixture;
-    }
-
-    private List<Fixture> mockFixtureList() {
-        return new ArrayList<Fixture>();
     }
 
 }

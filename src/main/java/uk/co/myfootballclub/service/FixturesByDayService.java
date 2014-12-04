@@ -1,6 +1,8 @@
 package uk.co.myfootballclub.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
@@ -19,9 +21,9 @@ import static java.lang.String.format;
  * @project MyFootballClub
  */
 @Service
-public class FixturesByDayService {
+public class FixturesByDayService extends AbstractService {
 
-    private static final String FIXTURES_DATA_URL = "http://www.football-data.org";
+    private static final String FIXTURES_DATA_URL = "http://www.football-data.org/teams/";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -37,15 +39,30 @@ public class FixturesByDayService {
      */
     public List<Fixture> getFixturesByDays(Object teamId, Object fixtureType, Object numberOfDays) throws InvalidFixtureTypeException {
 
-        Fixture[] fixtures;
+        ResponseEntity<Fixture[]> fixturesResp;
 
         if(fixtureType.equals("n") || fixtureType.equals("p")) {
-            fixtures = restTemplate.getForObject(format("%s/teams/%s/fixtures?timeFrame=%s%s", FIXTURES_DATA_URL,
-                    teamId, fixtureType, numberOfDays), Fixture[].class);
+
+            fixturesResp = restTemplate.exchange(format("%s%s/fixtures?timeFrame=%s%s", FIXTURES_DATA_URL,
+                    teamId, fixtureType, numberOfDays), HttpMethod.GET, generateRequestHeaders(), Fixture[].class);
+
         } else {
             throw new InvalidFixtureTypeException("Invalid FixtureType has been entered.");
         }
 
-        return Arrays.asList(fixtures);
+        Fixture[] fixturesList = fixturesResp.getBody();
+
+        return Arrays.asList(fixturesList);
     }
+
+    public Fixture getTeamsNextFixture(int teamId) {
+
+        ResponseEntity<Fixture[]> fixtureRequest = restTemplate.exchange(format("%s%s/fixtures?timeFrame=n7",FIXTURES_DATA_URL, teamId),
+                HttpMethod.GET, generateRequestHeaders(), Fixture[].class);
+
+        Fixture[] fixture = fixtureRequest.getBody();
+
+        return fixture[0];
+    }
+
 }

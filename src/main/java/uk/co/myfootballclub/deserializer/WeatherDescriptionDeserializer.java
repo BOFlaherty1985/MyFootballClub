@@ -24,10 +24,13 @@ public class WeatherDescriptionDeserializer extends JsonDeserializer<WeatherType
         JsonNode node = jp.getCodec().readTree(jp);
 
         WeatherType weatherDetails = new WeatherType();
-
-        weatherDetails.setMain(node.get(0).get("main").textValue());
-        weatherDetails.setDescription(node.get(0).get("description").textValue());
+        weatherDetails.setMain(deserializeTextElement(node, 0, "main"));
+        weatherDetails.setDescription(deserializeTextElement(node, 0, "description"));
 
         return weatherDetails;
+    }
+
+    private String deserializeTextElement(JsonNode node, int index, String fieldName) {
+        return node.get(index).get(fieldName).textValue();
     }
 }

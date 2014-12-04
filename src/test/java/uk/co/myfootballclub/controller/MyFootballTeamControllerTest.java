@@ -23,8 +23,6 @@ import uk.co.myfootballclub.service.FixturesByDayService;
 import uk.co.myfootballclub.service.LeagueByMatchDayService;
 import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
 
-import java.util.ArrayList;
-
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,6 +52,9 @@ public class MyFootballTeamControllerTest {
     private LeagueByMatchDayService leagueByMatchDayService;
     @Mock
     private WeatherForecastForFixtureService weatherForecastForFixtureService;
+
+    @Mock
+    Fixture nextFixture;
 
     @Before
     public void setUp() {
@@ -134,7 +135,6 @@ public class MyFootballTeamControllerTest {
                 .andExpect(view().name("displayFootballTeam"))
                 .andExpect(model().attributeExists("leagueStandings"));
 
-
     }
 
     @Test
@@ -160,16 +160,19 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyWeatherForecastForFixtureServiceHasBeenCalledOnetime() throws Exception {
 
+        when(fixturesByDaysService.getTeamsNextFixture(563)).thenReturn(nextFixture);
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
-        verify(weatherForecastForFixtureService, atLeastOnce()).retrieveWeatherForecastForFixture(new ArrayList<Fixture>());
+        verify(weatherForecastForFixtureService, atLeastOnce()).retrieveWeatherForecastForFixture(nextFixture);
 
     }
 
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsWeatherForFixtureModelObject() throws Exception {
 
-        when(weatherForecastForFixtureService.retrieveWeatherForecastForFixture(new ArrayList<Fixture>()))
+        when(fixturesByDaysService.getTeamsNextFixture(563)).thenReturn(nextFixture);
+        when(weatherForecastForFixtureService.retrieveWeatherForecastForFixture(nextFixture))
                 .thenReturn(new WeatherFixture());
 
         mockMvc.perform(get("/myFootballTeam"))
@@ -177,5 +180,26 @@ public class MyFootballTeamControllerTest {
                 .andExpect(view().name("displayFootballTeam"))
                 .andExpect(model().attributeExists("weatherForFixture"));
     }
+
+    @Test
+    public void verifyMyFootballTeamControllerDisplaysTeamsNextFixtureHasBeenCalledForTeam563() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk());
+
+        verify(fixturesByDaysService, times(1)).getTeamsNextFixture(563);
+
+    }
+
+    @Test
+    public void assertThatMyFootballTeamControllerHasModelObjectOfTeamsNextFixture() throws Exception {
+
+        when(fixturesByDaysService.getTeamsNextFixture(563)).thenReturn(new Fixture());
+
+        mockMvc.perform(get("/myFootballTeam")).andExpect(status().isOk())
+                .andExpect(model().attributeExists("teamsNextFixture"));
+
+    }
+
 
 }

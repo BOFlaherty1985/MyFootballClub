@@ -8,8 +8,6 @@ import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
 
-import java.util.List;
-
 import static java.lang.String.format;
 
 /**
@@ -19,7 +17,7 @@ import static java.lang.String.format;
  * @date Created on: 03/12/2014
  * @project MyFootballClub
  */
-@PropertySource("classpath:/uk/co/myfootballclub/config/weatherLocation.properties")
+@PropertySource("/resources/weatherLocation.properties")
 @Service
 public class WeatherForecastForFixtureService {
 
@@ -32,24 +30,18 @@ public class WeatherForecastForFixtureService {
     private static final String WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
     private static final String WEATHER_METRICS = "&units=metric";
 
-    public WeatherFixture retrieveWeatherForecastForFixture(List<Fixture> fixtureList) throws Exception {
+    public WeatherFixture retrieveWeatherForecastForFixture(Fixture nextFixture) throws Exception {
 
-        if(fixtureList == null) {
-            throw new Exception();
-        }
+        validateFixtureList(nextFixture);
 
-        WeatherFixture weatherFixture = new WeatherFixture();
+        String weatherLocation = environment.getProperty(nextFixture.getHomeTeam().replaceAll("\\s",""));
 
-        if(!fixtureList.isEmpty()) {
+        return restTemplate.getForObject(format("%s%s%s", WEATHER_API_URL, weatherLocation, WEATHER_METRICS),
+                WeatherFixture.class);
+    }
 
-            String weatherLocation = environment.getProperty(fixtureList.get(0).getHomeTeam().replaceAll(" ", ""));
-
-            weatherFixture = restTemplate.getForObject(format("%s%s%s", WEATHER_API_URL, weatherLocation, WEATHER_METRICS),
-                    WeatherFixture.class);
-
-        }
-
-        return weatherFixture;
+    private void validateFixtureList(Fixture nextFixture) throws Exception {
+        if(nextFixture == null) throw new Exception();
     }
 
 }

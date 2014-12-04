@@ -47,17 +47,21 @@ public class MyFootballTeamController {
         // TODO - retrieve id from team object (team.getId()) using teamId property from the User
         mav.addObject(new Team());
 
-        // Upcoming Fixtures
+        // Retrieve next fixture for given team
+        Fixture nextFixture = fixturesByDayService.getTeamsNextFixture(teamId);
+        mav.addObject("teamsNextFixture", nextFixture);
+
+        // Retrieve weather forecast for next fixture - write service method to retrieve next fixture
+        mav.addObject("weatherForFixture", weatherForecastForFixtureService.retrieveWeatherForecastForFixture(nextFixture));
+
+        // Upcoming Fixtures (next 30 days)
         mav.addObject("upcomingFixtures", retrieveFixturesByDays(teamId));
 
-        // Past Results
+        // Past Results (last 30 days)
         mav.addObject("recentResults", retrieveFixturesByDay(teamId));
 
         // League standings
         mav.addObject("leagueStandings", retrieveLeagueStandingsByLeagueId());
-
-        // Retrieve weather forecast for next fixture - write service method to retrieve next fixture
-        mav.addObject("weatherForFixture", weatherForecastForFixtureService.retrieveWeatherForecastForFixture(retrieveFixturesByDays(teamId)));
 
         mav.setViewName(DISPLAY_FOOTBALL_TEAM_VIEW);
 

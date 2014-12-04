@@ -5,9 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -17,12 +19,10 @@ import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
 import uk.co.myfootballclub.model.Fixture;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -35,13 +35,16 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = {TestConfig.class, WebInitializer.class})
-public class FixturesByDaysServiceTest {
+public class FixturesByDaysServiceTest extends ServiceTest {
 
     @Autowired
     private RestTemplate integrationTemplate;
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    ResponseEntity<Fixture[]> responseEntity = new ResponseEntity<Fixture[]>(HttpStatus.OK);
 
     @InjectMocks
     private FixturesByDayService service;
@@ -54,7 +57,9 @@ public class FixturesByDaysServiceTest {
     // assert that the method getFixturesByDays(int x) return is not null
     @Test
     public void assertThatGetFixturesByDaysMethodDoesNotReturnNull() throws InvalidFixtureTypeException {
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(new Fixture[1]);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(new Fixture[1]);
 
         assertNotNull("getFixturesByDays() is not equal to null.", service.getFixturesByDays(563, "n", 1));
     }
@@ -63,10 +68,13 @@ public class FixturesByDaysServiceTest {
     @Test
     public void verifyThatRestTemplateGetForObjectMethodHasBeenCalledOnceForObjectTypeString() throws InvalidFixtureTypeException {
 
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(new Fixture[1]);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(new Fixture[1]);
 
         service.getFixturesByDays(563, "n", 1);
-        verify(restTemplate, times(1)).getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any());
+        verify(restTemplate, times(1)).exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class);
 
     }
 
@@ -75,13 +83,11 @@ public class FixturesByDaysServiceTest {
     public void assertFixturesListIsEqualToOneBasedOnGivenJsonResponseFromRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[1];
+        json_array[0] = mockFixture("HomeTeam", null, 0, 0);
 
-        Fixture fixture = new Fixture();
-        fixture.setHomeTeam("HomeTeam");
-
-        json_array[0] = fixture;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "n", 1);
         assertEquals("FixtureList size equals 1.", 1, fixtureList.size());
@@ -92,18 +98,12 @@ public class FixturesByDaysServiceTest {
     public void assertFixtureListISEqualToTwoBasedOnGivenJsonResponseFroMRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[2];
+        json_array[0] = mockFixture("HomeTeam", null, 0, 0);
+        json_array[1] = mockFixture("HomeTeam2", null, 0, 0);
 
-        Fixture fixture_one = new Fixture();
-        fixture_one.setHomeTeam("HomeTeam1");
-
-        json_array[0] = fixture_one;
-
-        Fixture fixture_two = new Fixture();
-        fixture_two.setHomeTeam("HomeTeam2");
-
-        json_array[1] = fixture_two;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "n", 1);
         assertEquals("FixtureList size equals 2.", 2, fixtureList.size());
@@ -114,13 +114,11 @@ public class FixturesByDaysServiceTest {
     public void assertFixtureListObjectHomeTeamHasTheCorrectValueBasedOnJsonReturnFromRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[1];
+        json_array[0] = mockFixture("HomeTeam1", null, 0, 0);
 
-        Fixture fixture_one = new Fixture();
-        fixture_one.setHomeTeam("HomeTeam1");
-
-        json_array[0] = fixture_one;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "n", 1);
         Fixture aFixture = fixtureList.get(0);
@@ -133,13 +131,11 @@ public class FixturesByDaysServiceTest {
     public void assertFixtureListObjectAwayTeamHasTheCorrectValueBasedOnJsonReturnFromRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[1];
+        json_array[0] = mockFixture(null, "AwayTeam1", 0, 0);
 
-        Fixture fixture_one = new Fixture();
-        fixture_one.setAwayTeam("AwayTeam1");
-
-        json_array[0] = fixture_one;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "n", 1);
         Fixture aFixture = fixtureList.get(0);
@@ -152,13 +148,11 @@ public class FixturesByDaysServiceTest {
     public void assertFixtureListObjectGoalsHomeTeamHasTheCorrectValueBasedOnJsonReturnFromRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[1];
+        json_array[0] = mockFixture(null, "AwayTeam1", 1, 0);
 
-        Fixture fixture_one = new Fixture();
-        fixture_one.setGoalsHomeTeam(1);
-
-        json_array[0] = fixture_one;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "n", 1);
         Fixture aFixture = fixtureList.get(0);
@@ -171,13 +165,11 @@ public class FixturesByDaysServiceTest {
     public void assertFixtureListObjectGoalsAwayTeamHasTheCorrectValueBasedOnJsonReturnFromRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[1];
+        json_array[0] = mockFixture(null, "AwayTeam1", 0, 2);
 
-        Fixture fixture_one = new Fixture();
-        fixture_one.setGoalsAwayTeam(2);
-
-        json_array[0] = fixture_one;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "n", 1);
         Fixture aFixture = fixtureList.get(0);
@@ -190,13 +182,11 @@ public class FixturesByDaysServiceTest {
     public void assertFixtureListObjectDateHasTheCorrectValueBasedOnJsonReturnFromRESTService() throws InvalidFixtureTypeException {
 
         Fixture[] json_array = new Fixture[1];
+        json_array[0] = mockFixture(null, "AwayTeam1", 0, 2);
 
-        Fixture fixture_one = new Fixture();
-        fixture_one.setDate(new Date());
-
-        json_array[0] = fixture_one;
-
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(json_array);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=p1", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(json_array);
 
         List<Fixture> fixtureList = service.getFixturesByDays(563, "p", 1);
         Fixture aFixture = fixtureList.get(0);
@@ -208,17 +198,70 @@ public class FixturesByDaysServiceTest {
     @Test
     public void throwExceptionWhenTypeOfFixtureIsNotEqualToNorP() throws InvalidFixtureTypeException {
 
-        when(restTemplate.getForObject(Mockito.<String> any(), Mockito.<Class<Fixture[]>>any())).thenReturn(null);
-
         try {
             service.getFixturesByDays(563, "x", 5);
             fail("TypeOfFixture is not equal to 'n' or 'p'");
         } catch (InvalidFixtureTypeException e) {
-            assertEquals("assert InvalidFixtureTypeException message is valid.",
+            assertEquals("InvalidFixtureTypeException message is valid.",
                     "Invalid FixtureType has been entered.", e.getMessage());
         }
 
     }
+
+    @Test
+    public void assertThatGetTeamsNextFixtureReturnsObjectOfTypeFixture() {
+
+        Fixture[] fixturesArray = new Fixture[1];
+        fixturesArray[0] = new Fixture();
+
+        when(restTemplate.exchange("http://www.football-data.org/teams/1/fixtures?timeFrame=n7", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(fixturesArray);
+
+        assertTrue("getTeamsNextFixture() return type is an instance of Fixture.", service.getTeamsNextFixture(1)
+                instanceof Fixture);
+    }
+
+    @Test
+    public void verifyGetTeamsNextFixtureCallsRestTemplateForTeamWithID563() {
+
+        when(responseEntity.getBody()).thenReturn(new Fixture[1]);
+        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n7", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+
+        service.getTeamsNextFixture(563);
+        verify(restTemplate, times(1)).exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n7", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class);
+
+    }
+
+    @Test
+    public void verifyGetTeamsNextFixtureCallsRestTemplateForTeamWithID568() {
+
+        when(responseEntity.getBody()).thenReturn(new Fixture[1]);
+        when(restTemplate.exchange("http://www.football-data.org/teams/68/fixtures?timeFrame=n7", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+
+        service.getTeamsNextFixture(68);
+        verify(restTemplate, times(1)).exchange("http://www.football-data.org/teams/68/fixtures?timeFrame=n7", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class);
+
+    }
+
+    @Test
+    public void assertThatGetTeamsNextFixtureRestTemplateReturnedResultIsNotNull() {
+
+        Fixture[] fixtures = new Fixture[1];
+        fixtures[0] = new Fixture();
+
+        when(restTemplate.exchange("http://www.football-data.org/teams/1/fixtures?timeFrame=n7", HttpMethod.GET,
+                mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(fixtures);
+
+        Fixture nextFixture = service.getTeamsNextFixture(1);
+        assertNotNull("NextFixture is not null", nextFixture);
+    }
+
 
     @Test
     public void restTemplateIntegrationTestOne() {
@@ -242,6 +285,17 @@ public class FixturesByDaysServiceTest {
         Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p14", Fixture[].class);
         assertEquals("FixtureList size is equal to 2.", 2, fixtureList.length);
 
+    }
+
+    private Fixture mockFixture(String homeTeam, String awayTeam, int goalsHome, int goalsAway) {
+        Fixture fixture = new Fixture();
+        fixture.setHomeTeam(homeTeam);
+        fixture.setAwayTeam(awayTeam);
+        fixture.setGoalsHomeTeam(goalsHome);
+        fixture.setGoalsAwayTeam(goalsAway);
+        fixture.setDate(new Date());
+
+        return fixture;
     }
 
 }
