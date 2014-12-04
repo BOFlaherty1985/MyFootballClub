@@ -21,7 +21,7 @@ import static java.lang.String.format;
  * @project MyFootballClub
  */
 @Service
-public class FixturesByDayService extends AbstractService {
+public class FixturesByTeamService extends AbstractService {
 
     private static final String FIXTURES_DATA_URL = "http://www.football-data.org/teams/";
 

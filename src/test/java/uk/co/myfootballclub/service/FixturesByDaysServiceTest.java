@@ -47,7 +47,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     ResponseEntity<Fixture[]> responseEntity = new ResponseEntity<Fixture[]>(HttpStatus.OK);
 
     @InjectMocks
-    private FixturesByDayService service;
+    private FixturesByTeamService service;
 
     @Before
     public void setUp() {
@@ -288,6 +288,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     }
 
     private Fixture mockFixture(String homeTeam, String awayTeam, int goalsHome, int goalsAway) {
+
         Fixture fixture = new Fixture();
         fixture.setHomeTeam(homeTeam);
         fixture.setAwayTeam(awayTeam);

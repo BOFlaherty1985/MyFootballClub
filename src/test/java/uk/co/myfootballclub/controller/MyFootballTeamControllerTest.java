@@ -19,7 +19,7 @@ import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.league.League;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
-import uk.co.myfootballclub.service.FixturesByDayService;
+import uk.co.myfootballclub.service.FixturesByTeamService;
 import uk.co.myfootballclub.service.LeagueByMatchDayService;
 import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
 
@@ -47,7 +47,7 @@ public class MyFootballTeamControllerTest {
     private MyFootballTeamController controller;
 
     @Mock
-    private FixturesByDayService fixturesByDaysService;
+    private FixturesByTeamService fixturesByDaysService;
     @Mock
     private LeagueByMatchDayService leagueByMatchDayService;
     @Mock

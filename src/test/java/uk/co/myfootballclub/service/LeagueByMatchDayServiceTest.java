@@ -276,7 +276,9 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         restResult.setRanking(teamRankingList);
 
-        when(restTemplate.getForObject("http://www.football-data.org/soccerseasons/354/ranking?matchday=1", League.class)).thenReturn(restResult);
+        when(restTemplate.exchange("http://www.football-data.org/soccerseasons/354/ranking?matchday=1",
+                HttpMethod.GET, mockRequestHeaders(), League.class)).thenReturn(responseEntity);
+        when(responseEntity.getBody()).thenReturn(restResult);
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
         assertEquals("LeagueObject League Name is Equal to Premier League 2014/2015", restResult.getLeague()
@@ -296,7 +298,6 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
         }
 
     }
-
 
     private void setDefaultRESTLeagueResult(int leagueId) {
         when(restTemplate.exchange("http://www.football-data.org/soccerseasons/" + leagueId + "/ranking?matchday=1", HttpMethod.GET, mockRequestHeaders(),

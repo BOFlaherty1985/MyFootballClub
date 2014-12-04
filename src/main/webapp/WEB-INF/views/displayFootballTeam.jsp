@@ -26,6 +26,10 @@
                         <h2>
                             <b>West Ham United FC</b>
                         </h2>
+                        <h5>
+                            <b>Club Nickname: </b>
+                            <c:out value="${poc_club_details}"/>
+                        </h5>
                     </p>
                 </div>
 
