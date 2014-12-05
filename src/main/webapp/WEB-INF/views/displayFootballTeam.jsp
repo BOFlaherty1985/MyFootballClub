@@ -26,9 +26,20 @@
                         <h2>
                             <b>West Ham United FC</b>
                         </h2>
+                        <h4>Club Information</h4>
                         <h5>
-                            <b>Club Nickname: </b>
-                            <c:out value="${poc_club_details}"/>
+                            <b>Nickname:</b>
+                            <c:out value="${clubDetails.clubNickname}"/><br/>
+                            <b>Founded: </b>
+                            <c:out value="${clubDetails.clubFounded}"/><br/>
+                            <b>Stadium: </b>
+                            <c:out value="${clubDetails.clubStadium}"/><br/>
+                            <b>Capacity: </b>
+                            <c:out value="${clubDetails.clubCapacity}"/><br/>
+                            <b>Website: </b>
+                            <a href="<c:out value="${clubDetails.clubWebsite}"/>" target="_blank">Official Club Website</a><br/>
+                            <b>Facebook: </b>
+                            <c:out value="${clubDetails.clubFacebook}"/><br/>
                         </h5>
                     </p>
                 </div>

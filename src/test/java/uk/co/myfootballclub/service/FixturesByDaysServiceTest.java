@@ -263,29 +263,29 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     }
 
 
-    @Test
-    public void restTemplateIntegrationTestOne() {
-
-        Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p5", Fixture[].class);
-        assertEquals("FixtureList size is equal to 1.", 1, fixtureList.length);
-
-    }
-
-    @Test
-    public void restTemplateIntegrationTestTwo() {
-
-        Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p1", Fixture[].class);
-        assertEquals("FixtureList size is equal to 0.", 0, fixtureList.length);
-
-    }
-
-    @Test
-    public void restTemplateIntegrationTestThree() {
-
-        Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p14", Fixture[].class);
-        assertEquals("FixtureList size is equal to 2.", 2, fixtureList.length);
-
-    }
+//    @Test
+//    public void restTemplateIntegrationTestOne() {
+//
+//        Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p5", Fixture[].class);
+//        assertEquals("FixtureList size is equal to 1.", 1, fixtureList.length);
+//
+//    }
+//
+//    @Test
+//    public void restTemplateIntegrationTestTwo() {
+//
+//        Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p1", Fixture[].class);
+//        assertEquals("FixtureList size is equal to 0.", 0, fixtureList.length);
+//
+//    }
+//
+//    @Test
+//    public void restTemplateIntegrationTestThree() {
+//
+//        Fixture[] fixtureList = integrationTemplate.getForObject("http://www.football-data.org/teams/563/fixtures?timeFrame=p14", Fixture[].class);
+//        assertEquals("FixtureList size is equal to 2.", 2, fixtureList.length);
+//
+//    }
 
     private Fixture mockFixture(String homeTeam, String awayTeam, int goalsHome, int goalsAway) {
 

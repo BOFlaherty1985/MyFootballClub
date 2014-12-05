@@ -1,8 +1,8 @@
 {
-    "club_nickname" : "The Hammers",
-    "club_Founded" : "1895",
-    "club_stadium" : "The Boleyn Ground",
-    "club_stadium_capacity" : "35,016",
-    "club_website" : "http://www.whufc.com/page/Home",
-    "club_facebook" : "https://www.facebook.com/westhamunitedofficial"
+    "clubNickname" : "The Hammers",
+    "clubFounded" : "1895",
+    "clubStadium" : "The Boleyn Ground",
+    "clubCapacity" : "35,016",
+    "clubWebsite" : "http://www.whufc.com/page/Home",
+    "clubFacebook" : "https://www.facebook.com/westhamunitedofficial"
 }

@@ -6,15 +6,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
-import uk.co.myfootballclub.model.ClubDetails;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.Team;
 import uk.co.myfootballclub.model.league.League;
+import uk.co.myfootballclub.service.ClubDetailsService;
 import uk.co.myfootballclub.service.FixturesByTeamService;
 import uk.co.myfootballclub.service.LeagueByMatchDayService;
 import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -33,6 +32,8 @@ public class MyFootballTeamController {
     private LeagueByMatchDayService leagueService;
     @Autowired
     private WeatherForecastForFixtureService weatherService;
+    @Autowired
+    private ClubDetailsService clubDetailsService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -47,17 +48,12 @@ public class MyFootballTeamController {
         // TODO - remove hardcoded team id
         int teamId = 563;
 
-        // TODO -  Proof Of Concept Custom Team JSON for ClubDetails
-        InputStream is = ClubDetails.class.getResourceAsStream("/teamdata/premierleague/westhamunitedfc.json");
-
-        ClubDetails details = objectMapper.readValue(is, ClubDetails.class);
-        System.out.println(details);
-        mav.addObject("poc_club_details", details.getClub_nickname());
-
         // TODO - Retrieve Logged In User, Logged in User has a team preference (teamId)
         // TODO - retrieve id from team object (team.getId()) using teamId property from the User
 
         mav.addObject(new Team());
+
+        displayClubDetails(mav, "westhamunitedfc"); // TODO - remove hardcoded clubName parameter
 
         displayNextFixtureAndCorrespondingWeather(mav, teamId);
 
@@ -68,6 +64,12 @@ public class MyFootballTeamController {
         mav.setViewName(DISPLAY_FOOTBALL_TEAM_VIEW);
 
         return mav;
+    }
+
+    private void displayClubDetails(ModelAndView mav, String clubName) throws Exception {
+        // Display additional club information from json file
+        mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails("westhamunitedfc"));
+
     }
 
     private void displayNextFixtureAndCorrespondingWeather(ModelAndView mav, int teamId) throws Exception {

@@ -16,9 +16,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
+import uk.co.myfootballclub.model.ClubDetails;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.league.League;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
+import uk.co.myfootballclub.service.ClubDetailsService;
 import uk.co.myfootballclub.service.FixturesByTeamService;
 import uk.co.myfootballclub.service.LeagueByMatchDayService;
 import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
@@ -52,6 +54,8 @@ public class MyFootballTeamControllerTest {
     private LeagueByMatchDayService leagueByMatchDayService;
     @Mock
     private WeatherForecastForFixtureService weatherForecastForFixtureService;
+    @Mock
+    private ClubDetailsService clubDetailsService;
 
     @Mock
     Fixture nextFixture;
@@ -198,6 +202,27 @@ public class MyFootballTeamControllerTest {
 
         mockMvc.perform(get("/myFootballTeam")).andExpect(status().isOk())
                 .andExpect(model().attributeExists("teamsNextFixture"));
+
+    }
+
+    @Test
+    public void verifyMyFootballTeamControllerClubDetailsServiceHasBeenCalledForAGivenTeam() throws Exception {
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk());
+
+        verify(clubDetailsService, times(1)).retrieveClubDetails("westhamunitedfc");
+
+    }
+
+    @Test
+    public void assertThatMyFootballTeamControllerHasModelObjectOfClubDetails() throws Exception {
+
+        when(clubDetailsService.retrieveClubDetails("westhamunitedfc")).thenReturn(new ClubDetails());
+
+        mockMvc.perform(get("/myFootballTeam"))
+                .andExpect(status().isOk())
+        .andExpect(model().attributeExists("clubDetails"));
 
     }
 

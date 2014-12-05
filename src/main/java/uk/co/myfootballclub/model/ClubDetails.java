@@ -12,20 +12,59 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClubDetails {
 
-    private String club_nickname;
+    private String clubNickname;
+    private String clubFounded;
+    private String clubStadium;
+    private String clubCapacity;
+    private String clubWebsite;
+    private String clubFacebook;
 
-    public String getClub_nickname() {
-        return club_nickname;
+    public String getClubNickname() {
+        return clubNickname;
     }
 
-    public void setClub_nickname(String club_nickname) {
-        this.club_nickname = club_nickname;
+    public void setClubNickname(String clubNickname) {
+        this.clubNickname = clubNickname;
     }
 
-    @Override
-    public String toString() {
-        return "ClubDetails{" +
-                "club_nickname='" + club_nickname + '\'' +
-                '}';
+    public void setClubFounded(String clubFounded) {
+        this.clubFounded = clubFounded;
     }
+
+    public String getClubFounded() {
+        return clubFounded;
+    }
+
+    public void setClubStadium(String clubStadium) {
+        this.clubStadium = clubStadium;
+    }
+
+    public String getClubStadium() {
+        return clubStadium;
+    }
+
+    public void setClubCapacity(String clubCapacity) {
+        this.clubCapacity = clubCapacity;
+    }
+
+    public String getClubCapacity() {
+        return clubCapacity;
+    }
+
+    public void setClubWebsite(String clubWebsite) {
+        this.clubWebsite = clubWebsite;
+    }
+
+    public String getClubWebsite() {
+        return clubWebsite;
+    }
+
+    public void setClubFacebook(String clubFacebook) {
+        this.clubFacebook = clubFacebook;
+    }
+
+    public String getClubFacebook() {
+        return clubFacebook;
+    }
+
 }
