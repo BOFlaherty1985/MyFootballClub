@@ -1,6 +1,5 @@
 package uk.co.myfootballclub.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +33,6 @@ public class MyFootballTeamController {
     private WeatherForecastForFixtureService weatherService;
     @Autowired
     private ClubDetailsService clubDetailsService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private static final String DISPLAY_FOOTBALL_TEAM_VIEW = "displayFootballTeam";
     private static final int THIRTY_DAYS = 30;
