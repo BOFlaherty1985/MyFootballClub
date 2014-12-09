@@ -7,5 +7,6 @@ Technologies
 - Java 7
 - Spring 4 (Java Configuration)
 - Spring Data JPA
+- Hibernate validation
 - Bootsrap
 - Json
