@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import uk.co.myfootballclub.exception.ClubNameIsNotValidException;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.Team;
 import uk.co.myfootballclub.model.league.League;
+import uk.co.myfootballclub.persistence.domain.User;
 import uk.co.myfootballclub.service.ClubDetailsService;
 import uk.co.myfootballclub.service.FixturesByTeamService;
 import uk.co.myfootballclub.service.LeagueByMatchDayService;
@@ -41,6 +43,9 @@ public class MyFootballTeamController {
     @RequestMapping(value="/myFootballTeam")
     public ModelAndView myFootballTeamDisplay(ModelAndView mav) throws Exception {
 
+        // add a new user object for user registration form
+        mav.addObject(new User());
+
         // TODO - remove hardcoded team id
         int teamId = 563;
 
@@ -64,7 +69,13 @@ public class MyFootballTeamController {
 
     private void displayClubDetails(ModelAndView mav, String clubName) throws Exception {
         // Display additional club information from json file
-        mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails("westhamunitedfc"));
+
+        try {
+            mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails("westhamunitedfc"));
+        } catch (ClubNameIsNotValidException e) {
+            // TODO - investigate why this error is being thrown? can't find json file.
+            System.out.println("ClubNameIsNotValid");
+        }
 
     }
 

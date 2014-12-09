@@ -27,6 +27,7 @@ import java.util.Properties;
  */
 @Configuration
 @ComponentScan({"uk.co.myfootballclub.persistence.*"})
+// Configures Spring Data JPA and sets the base package of the DAO classes
 @EnableJpaRepositories(basePackages = "uk.co.myfootballclub.persistence.dao")
 @EnableTransactionManagement
 @PropertySource(value ="/resources/database.properties")
@@ -54,6 +55,13 @@ public class PersistenceConfig {
         return new HikariDataSource(dS);
     }
 
+    /**
+     * EntityManager: A class that manages the persistent state (or lifecycle) of an entity
+     * LocalContainerEntityManagerFactoryBean: produces a container-manager EntityManagerFactory
+     *
+     * @param dataSource
+     * @return
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
 

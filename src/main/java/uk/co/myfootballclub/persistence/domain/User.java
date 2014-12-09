@@ -1,9 +1,14 @@
 package uk.co.myfootballclub.persistence.domain;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.validation.annotation.Validated;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 /**
  * User Domain Object
@@ -13,15 +18,23 @@ import javax.persistence.Id;
  * @project MyFootballClub
  */
 @Entity
+@Validated
 public class User {
 
     @Id
     @GeneratedValue
     private Long id;
+    @NotNull
+    @Length(min = 3)
     private String firstName;
+    @NotNull
+    @Length(min = 2)
     private String lastName;
+    @NotNull
+    @Length(min = 6, max = 20)
     private String username;
     @Column(name = "User_Email")
+    @Email
     private String email;
     @Column(name = "Club_ID")
     private int myFootballClub;
