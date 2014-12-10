@@ -4,16 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import uk.co.myfootballclub.exception.ClubNameIsNotValidException;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.Team;
 import uk.co.myfootballclub.model.league.League;
+import uk.co.myfootballclub.persistence.dao.UserRepository;
 import uk.co.myfootballclub.persistence.domain.User;
-import uk.co.myfootballclub.service.ClubDetailsService;
-import uk.co.myfootballclub.service.FixturesByTeamService;
-import uk.co.myfootballclub.service.LeagueByMatchDayService;
-import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
+import uk.co.myfootballclub.service.*;
 
 import java.util.List;
 
@@ -35,6 +32,10 @@ public class MyFootballTeamController {
     private WeatherForecastForFixtureService weatherService;
     @Autowired
     private ClubDetailsService clubDetailsService;
+    @Autowired
+    private TeamsListService teamsListService;
+    @Autowired
+    private UserRepository userRepository;
 
     private static final String DISPLAY_FOOTBALL_TEAM_VIEW = "displayFootballTeam";
     private static final int THIRTY_DAYS = 30;
@@ -43,22 +44,18 @@ public class MyFootballTeamController {
     @RequestMapping(value="/myFootballTeam")
     public ModelAndView myFootballTeamDisplay(ModelAndView mav) throws Exception {
 
-        // add a new user object for user registration form
-        mav.addObject(new User());
+        // retrieve logged in user
+        User lgdInUser = userRepository.findOne(1L);
 
-        // TODO - remove hardcoded team id
-        int teamId = 563;
-
-        // TODO - Retrieve Logged In User, Logged in User has a team preference (teamId)
-        // TODO - retrieve id from team object (team.getId()) using teamId property from the User
+        setupRegisterUserModal(mav);
 
         mav.addObject(new Team());
 
         displayClubDetails(mav, "westhamunitedfc"); // TODO - remove hardcoded clubName parameter
 
-        displayNextFixtureAndCorrespondingWeather(mav, teamId);
+        displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub());
 
-        displayFixturesAndResultsFromLast30days(mav, teamId);
+        displayFixturesAndResultsFromLast30days(mav, lgdInUser.getMyFootballClub());
 
         displayLeagueTable(mav);
 
@@ -67,14 +64,20 @@ public class MyFootballTeamController {
         return mav;
     }
 
-    private void displayClubDetails(ModelAndView mav, String clubName) throws Exception {
-        // Display additional club information from json file
+    private void setupRegisterUserModal(ModelAndView mav) {
 
+        // setup register user form
+        mav.addObject(new User());
+        mav.addObject("teamsForLeague", teamsListService.retrieveListOfTeams(PREMIER_LEAGUE_ID));
+    }
+
+    private void displayClubDetails(ModelAndView mav, String clubName) throws Exception {
+
+        // Display additional club information from json file
         try {
             mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails("westhamunitedfc"));
-        } catch (ClubNameIsNotValidException e) {
-            // TODO - investigate why this error is being thrown? can't find json file.
-            System.out.println("ClubNameIsNotValid");
+        } catch (Exception e) {
+            System.out.println("Club JSON File Not Found");
         }
 
     }

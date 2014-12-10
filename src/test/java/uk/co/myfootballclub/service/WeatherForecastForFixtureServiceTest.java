@@ -10,7 +10,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
@@ -20,9 +19,7 @@ import uk.co.myfootballclub.model.weather.WeatherFixture;
 import uk.co.myfootballclub.model.weather.WeatherType;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Weather Forecast For Given Fixture
@@ -85,8 +82,6 @@ public class WeatherForecastForFixtureServiceTest {
          5. send weather object to controller and save value to the model.
 
        */
-
-    private MockMvc mockMvc;
 
     @InjectMocks
     private WeatherForecastForFixtureService service;

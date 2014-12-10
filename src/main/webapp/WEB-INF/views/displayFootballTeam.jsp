@@ -38,9 +38,7 @@
                              alt="..." class="img-thumbnail" style="height: 200px; width: 200px">
                     </p>
                     <p>
-                        <h2>
-                            <b>West Ham United FC</b>
-                        </h2>
+                        <h2><b>West Ham United FC</b></h2>
                         <h4>Club Information</h4>
                         <h5>
                             <b>Nickname:</b>
@@ -69,22 +67,14 @@
 
                 <div class="col-md-10">
                     <p>
-                        <h4>
-                            <b>Next Fixture</b>
-                        </h4>
+                        <h4><b>Next Fixture</b></h4>
                     </p>
                     <p>
                         <table class="table">
                             <tr>
-                                <td>
-                                    <c:out value="${teamsNextFixture.homeTeam}"/>
-                                </td>
-                                <td>
-                                    <b>vs.</b>
-                                </td>
-                                <td>
-                                    <c:out value="${teamsNextFixture.awayTeam}"/>
-                                </td>
+                                <td><c:out value="${teamsNextFixture.homeTeam}"/></td>
+                                <td><b>vs.</b></td>
+                                <td><c:out value="${teamsNextFixture.awayTeam}"/></td>
                             </tr>
                         </table>
                     </p>
@@ -105,24 +95,15 @@
 
                 <div class="col-md-5">
                     <p>
-                        <h4>
-                            <b>Upcoming Fixtures</b>
-                        </h4>
+                        <h4><b>Upcoming Fixtures</b></h4>
                     </p>
-
                     <p>
                         <table class="table">
                             <c:forEach var="fixture" items="${upcomingFixtures}">
                                 <tr>
-                                    <td>
-                                        <c:out value="${fixture.homeTeam}"/>
-                                    </td>
-                                    <td>
-                                        <b>vs.</b>
-                                    </td>
-                                    <td>
-                                        <c:out value="${fixture.awayTeam}"/>
-                                    </td>
+                                    <td><c:out value="${fixture.homeTeam}"/></td>
+                                    <td><b>vs.</b></td>
+                                    <td><c:out value="${fixture.awayTeam}"/></td>
                                 </tr>
                             </c:forEach>
                         </table>
@@ -132,30 +113,17 @@
 
                 <div class="col-md-5">
                     <p>
-                        <h4>
-                            <b>Previous Results</b>
-                        </h4>
+                        <h4> <b>Previous Results</b></h4>
                     </p>
-
                     <p>
                         <table class="table">
                             <c:forEach var="result" items="${recentResults}">
                                 <tr>
-                                    <td>
-                                        <c:out value="${result.homeTeam}"/>
-                                    </td>
-                                    <td>
-                                        <c:out value="${result.goalsHomeTeam}"/>
-                                    </td>
-                                    <td>
-                                        <b>vs.</b>
-                                    </td>
-                                    <td>
-                                        <c:out value="${result.goalsAwayTeam}"/>
-                                    </td>
-                                    <td>
-                                        <c:out value="${result.awayTeam}"/>
-                                    </td>
+                                    <td><c:out value="${result.homeTeam}"/></td>
+                                    <td><c:out value="${result.goalsHomeTeam}"/></td>
+                                    <td><b>vs.</b></td>
+                                    <td><c:out value="${result.goalsAwayTeam}"/></td>
+                                    <td><c:out value="${result.awayTeam}"/></td>
                                 </tr>
                             </c:forEach>
                         </table>
@@ -209,31 +177,51 @@
         <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form:form action="/MyFootballClub/registerUser" method="post" commandName="user">
 
-                        <table class="table-condensed">
-                            <tr>
-                                <td><form:label path="firstName">First Name:</form:label></td>
-                                <td><form:input path="firstName"/></td>
-                            </tr>
-                            <tr>
-                                <td><form:label path="lastName">Last Name:</form:label></td>
-                                <td><form:input path="lastName"/></td>
-                            </tr>
-                            <tr>
-                                <td><form:label path="username">Username:</form:label></td>
-                                <td><form:input path="username"/></td>
-                            </tr>
-                            <tr>
-                                <td><form:label path="email">Email:</form:label></td>
-                                <td><form:input path="email"/></td>
-                            </tr>
-                            <tr>
-                                <td><input type="submit" value="Register User" class="btn btn-primary"/></td>
-                            </tr>
-                        </table>
+                    <div id="container">
 
-                    </form:form>
+                        <div class="row">
+
+                            <form:form action="/MyFootballClub/registerUser" method="post" commandName="user">
+
+                                <table class="table-condensed">
+                                    <tr>
+                                        <td><form:label path="firstName">First Name:</form:label></td>
+                                        <td><form:input path="firstName"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><form:label path="lastName">Last Name:</form:label></td>
+                                        <td><form:input path="lastName"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><form:label path="username">Username:</form:label></td>
+                                        <td><form:input path="username"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><form:label path="email">Email:</form:label></td>
+                                        <td><form:input path="email"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><form:label path="myFootballClub">Your Team:</form:label></td>
+                                        <td>
+                                            <form:select path="myFootballClub">
+                                                <c:forEach var="team" items="${teamsForLeague}">
+                                                    <form:option value="${team.teamId}" label="${team.teamDescription}"/>
+                                                </c:forEach>
+                                            </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="submit" value="Register User" class="btn btn-primary"/></td>
+                                    </tr>
+                                </table>
+
+                            </form:form>
+
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>

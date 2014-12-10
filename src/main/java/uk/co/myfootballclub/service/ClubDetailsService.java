@@ -21,7 +21,8 @@ import static java.lang.String.format;
 @Component
 public class ClubDetailsService {
 
-    private String CLUB_DETAILS_PATH = "/teamdata/premierleague/";
+    // TODO - fix path URL
+    private String CLUB_DETAILS_PATH = "teamdata/premierleague/";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -39,10 +40,10 @@ public class ClubDetailsService {
         return clubDetails;
     }
 
+    // TODO - fix getResourcesAsStream
     protected InputStream retrieveJsonFileForClub(String clubName) {
-        return ClubDetails.class.
-                getResourceAsStream(format("%s%s.json", CLUB_DETAILS_PATH,
-                        clubName.replaceAll("//s", "").toLowerCase()));
+        return getClass().getClassLoader().getResourceAsStream(format("%s%s.json", CLUB_DETAILS_PATH,
+                clubName.replaceAll("//s", "").toLowerCase()));
     }
 
 }
