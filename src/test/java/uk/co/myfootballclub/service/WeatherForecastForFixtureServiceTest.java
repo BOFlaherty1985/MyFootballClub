@@ -136,7 +136,7 @@ public class WeatherForecastForFixtureServiceTest {
             service.retrieveWeatherForecastForFixture(null);
             fail("List of Fixtures Parameter must not be null.");
         }  catch (Exception e) {
-            System.out.println("List of Fixtures is null.");
+           e.printStackTrace();
         }
 
     }

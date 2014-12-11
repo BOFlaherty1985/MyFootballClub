@@ -31,9 +31,11 @@ public class MyFootballTeamController {
     @Autowired
     private WeatherForecastForFixtureService weatherService;
     @Autowired
+    private ClubService clubService;
+    @Autowired
     private ClubDetailsService clubDetailsService;
     @Autowired
-    private TeamsListService teamsListService;
+    private TeamsDropdownService teamsDropdownService;
     @Autowired
     private UserRepository userRepository;
 
@@ -49,9 +51,11 @@ public class MyFootballTeamController {
 
         setupRegisterUserModal(mav);
 
-        mav.addObject(new Team());
+        Team footballClub = clubService.retrieveFootballClubById(lgdInUser.getMyFootballClub());
+        mav.addObject(footballClub);
 
-        displayClubDetails(mav, "westhamunitedfc"); // TODO - remove hardcoded clubName parameter
+        String teamName = footballClub.getName().replaceAll("\\p{Z}", "").toLowerCase();
+        displayClubDetails(mav, teamName);
 
         displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub());
 
@@ -68,14 +72,14 @@ public class MyFootballTeamController {
 
         // setup register user form
         mav.addObject(new User());
-        mav.addObject("teamsForLeague", teamsListService.retrieveListOfTeams(PREMIER_LEAGUE_ID));
+        mav.addObject("teamsForLeague", teamsDropdownService.retrieveListOfTeams(PREMIER_LEAGUE_ID));
     }
 
     private void displayClubDetails(ModelAndView mav, String clubName) throws Exception {
 
         // Display additional club information from json file
         try {
-            mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails("westhamunitedfc"));
+            mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails(clubName));
         } catch (Exception e) {
             System.out.println("Club JSON File Not Found");
         }

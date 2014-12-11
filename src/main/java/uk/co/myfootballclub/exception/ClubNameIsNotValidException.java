@@ -12,4 +12,5 @@ public class ClubNameIsNotValidException extends Exception {
     public ClubNameIsNotValidException(String message) {
         super(message);
     }
+
 }

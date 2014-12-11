@@ -21,7 +21,6 @@ import static java.lang.String.format;
 @Component
 public class ClubDetailsService {
 
-    // TODO - fix path URL
     private String CLUB_DETAILS_PATH = "teamdata/premierleague/";
 
     @Autowired
@@ -40,7 +39,6 @@ public class ClubDetailsService {
         return clubDetails;
     }
 
-    // TODO - fix getResourcesAsStream
     protected InputStream retrieveJsonFileForClub(String clubName) {
         return getClass().getClassLoader().getResourceAsStream(format("%s%s.json", CLUB_DETAILS_PATH,
                 clubName.replaceAll("//s", "").toLowerCase()));

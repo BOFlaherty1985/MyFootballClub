@@ -1,6 +1,7 @@
 package uk.co.myfootballclub.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import uk.co.myfootballclub.persistence.dao.TeamListRepository;
 import uk.co.myfootballclub.persistence.domain.TeamList;
@@ -15,13 +16,13 @@ import java.util.List;
  * @project MyFootballClub
  */
 @Service
-public class TeamsListService {
+public class TeamsDropdownService {
 
     @Autowired
     private TeamListRepository teamListRepository;
 
     public List<TeamList> retrieveListOfTeams(int leagueId) {
-        return teamListRepository.retrieveTeamListByLeagueId(leagueId);
+        return teamListRepository.findByLeagueId(leagueId, new Sort(Sort.Direction.ASC, "teamDescription"));
     }
 }
 

@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -30,15 +31,17 @@ import static org.mockito.Mockito.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfig.class, WebInitializer.class})
 @WebAppConfiguration
-public class TeamsListServiceTest {
+public class TeamsDropdownServiceTest {
 
     private static final int LEAGUE_ID_TESTCASE = 1;
     private static final int TEAM_ID_TESTCASE = 1;
 
     @InjectMocks
-    private TeamsListService teamsListService;
+    private TeamsDropdownService teamsDropdownService;
     @Mock
     private TeamListRepository teamListRepository;
+
+    private Sort sortByTeamDescription = new Sort(Sort.Direction.ASC, "teamDescription");
 
     @Before
     public void setUp() {
@@ -49,15 +52,15 @@ public class TeamsListServiceTest {
     public void retrieveListOfTeams_returnsNull_assertionFailureMustNotReturnNull() {
 
         assertNotNull("retrieveListOfTeams() return must not be null",
-                teamsListService.retrieveListOfTeams(1));
+                teamsDropdownService.retrieveListOfTeams(1));
     }
 
     @Test
     public void retrieveListOfTeams_returnType_listOfTeamListObjectsReturned() {
 
-        when(teamListRepository.retrieveTeamListByLeagueId(1)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
+        when(teamListRepository.findByLeagueId(1, sortByTeamDescription)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
 
-        assertTrue("retrieveListOfTeams() returns List<TeamList>", teamsListService.retrieveListOfTeams(1)
+        assertTrue("retrieveListOfTeams() returns List<TeamList>", teamsDropdownService.retrieveListOfTeams(1)
                 .get(0) instanceof TeamList);
 
     }
@@ -65,18 +68,18 @@ public class TeamsListServiceTest {
     @Test
     public void retrieveListOfTeams_teamListReturnSize_isGreaterThanZero() {
 
-        when(teamListRepository.retrieveTeamListByLeagueId(1)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
+        when(teamListRepository.findByLeagueId(1, sortByTeamDescription)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
 
-        List<TeamList> teamsList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> teamsList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         assertTrue("teamsList size is greater than zero.", teamsList.size() > 0);
     }
 
     @Test
     public void retrieveListOfTeams_teamListHasTeamId_teamIdIsEqualTo1() {
 
-        when(teamListRepository.retrieveTeamListByLeagueId(LEAGUE_ID_TESTCASE)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
+        when(teamListRepository.findByLeagueId(LEAGUE_ID_TESTCASE, sortByTeamDescription)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
 
-        List<TeamList> teamsList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> teamsList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         TeamList testObject = teamsList.get(0);
 
         assertEquals("teamList object teamId value is equal to 1", TEAM_ID_TESTCASE, testObject.getTeamId());
@@ -86,9 +89,9 @@ public class TeamsListServiceTest {
     @Test
     public void retrieveListOfTeams_teamListHasTeamDescription_teamDescriptionHasValue() {
 
-        when(teamListRepository.retrieveTeamListByLeagueId(1)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
+        when(teamListRepository.findByLeagueId(1, sortByTeamDescription)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
 
-        List<TeamList> teamsList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> teamsList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         TeamList testObject = teamsList.get(0);
 
         assertTrue("teamList object teamDescription has value.", !testObject.getTeamDescription().isEmpty());
@@ -98,9 +101,9 @@ public class TeamsListServiceTest {
     @Test
     public void retrieveListOfTeams_teamListHasLeagueId_leagueIdIsEqualTo1() {
 
-        when(teamListRepository.retrieveTeamListByLeagueId(LEAGUE_ID_TESTCASE)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
+        when(teamListRepository.findByLeagueId(LEAGUE_ID_TESTCASE, sortByTeamDescription)).thenReturn(mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, TEAM_ID_TESTCASE));
 
-        List<TeamList> teamsList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> teamsList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         TeamList testObject = teamsList.get(0);
 
         assertEquals("teamList object leagueId value is equal to 1", LEAGUE_ID_TESTCASE, testObject.getLeagueId());
@@ -111,9 +114,9 @@ public class TeamsListServiceTest {
 
         int leagueId = 5;
 
-        when(teamListRepository.retrieveTeamListByLeagueId(leagueId)).thenReturn(mockPremierLeagueTeamsList(leagueId, TEAM_ID_TESTCASE));
+        when(teamListRepository.findByLeagueId(leagueId, sortByTeamDescription)).thenReturn(mockPremierLeagueTeamsList(leagueId, TEAM_ID_TESTCASE));
 
-        List<TeamList> teamsList = teamsListService.retrieveListOfTeams(leagueId);
+        List<TeamList> teamsList = teamsDropdownService.retrieveListOfTeams(leagueId);
         TeamList testObject = teamsList.get(0);
 
         assertEquals("teamList object leagueId value is equal to 5", leagueId, testObject.getLeagueId());
@@ -125,8 +128,8 @@ public class TeamsListServiceTest {
 
         final int LEAGUE_ID = 2;
 
-        teamsListService.retrieveListOfTeams(LEAGUE_ID);
-        verify(teamListRepository, times(1)).retrieveTeamListByLeagueId(LEAGUE_ID);
+        teamsDropdownService.retrieveListOfTeams(LEAGUE_ID);
+        verify(teamListRepository, times(1)).findByLeagueId(LEAGUE_ID, sortByTeamDescription);
 
     }
 
@@ -135,9 +138,9 @@ public class TeamsListServiceTest {
 
         List<TeamList> premierLeagueTeams = mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, 30);
 
-        when(teamListRepository.retrieveTeamListByLeagueId(LEAGUE_ID_TESTCASE)).thenReturn(premierLeagueTeams);
+        when(teamListRepository.findByLeagueId(LEAGUE_ID_TESTCASE, sortByTeamDescription)).thenReturn(premierLeagueTeams);
 
-        List<TeamList> resultList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> resultList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         assertEquals("List<TeamList> result is equal to given size mocked league list", premierLeagueTeams.size(),
                 resultList.size());
 
@@ -149,9 +152,9 @@ public class TeamsListServiceTest {
 
         List<TeamList> premierLeagueTeams = mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, 30);
 
-        when(teamListRepository.retrieveTeamListByLeagueId(LEAGUE_ID_TESTCASE)).thenReturn(premierLeagueTeams);
+        when(teamListRepository.findByLeagueId(LEAGUE_ID_TESTCASE, sortByTeamDescription)).thenReturn(premierLeagueTeams);
 
-        List<TeamList> resultList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> resultList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         assertEquals(premierLeagueTeams.get(0), resultList.get(0));
 
     }
@@ -161,9 +164,9 @@ public class TeamsListServiceTest {
 
         List<TeamList> premierLeagueTeams = mockPremierLeagueTeamsList(LEAGUE_ID_TESTCASE, 30);
 
-        when(teamListRepository.retrieveTeamListByLeagueId(LEAGUE_ID_TESTCASE)).thenReturn(premierLeagueTeams);
+        when(teamListRepository.findByLeagueId(LEAGUE_ID_TESTCASE, sortByTeamDescription)).thenReturn(premierLeagueTeams);
 
-        List<TeamList> resultList = teamsListService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
+        List<TeamList> resultList = teamsDropdownService.retrieveListOfTeams(LEAGUE_ID_TESTCASE);
         assertEquals(premierLeagueTeams.get(1), resultList.get(1));
 
     }

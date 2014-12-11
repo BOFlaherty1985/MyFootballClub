@@ -40,7 +40,6 @@ public class PersistenceConfig {
     public DataSource dataSource() {
 
         // HikariCP is a fast, simple and reliable 'zero-overhead' JDBC connection pool.  http://brettwooldridge.github.io/HikariCP/
-
         HikariConfig dS = new HikariConfig();
         dS.setMaximumPoolSize(100);  // Controls the maximum size that the pool is allowed to reach (idel and in-user connections)
         /*
@@ -67,9 +66,11 @@ public class PersistenceConfig {
 
         final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
+        // a DataSource configuration is injected into the entity manager, for this example I are using a H2 database
         emf.setDataSource(dataSource);
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        emf.setPackagesToScan(new String[] {"uk.co.myfootballclub.persistence"});
+        // the entity manager will scan this package for classes that are annotated with @Entity
+        emf.setPackagesToScan(new String[] {"uk.co.myfootballclub.persistence.domain"});
 
         Properties props = new Properties();
         props.put("hibernate.dialect", env.getProperty("hibernate.dialect"));

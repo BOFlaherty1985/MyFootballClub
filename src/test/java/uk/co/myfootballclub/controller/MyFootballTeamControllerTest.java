@@ -164,7 +164,7 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyWeatherForecastForFixtureServiceHasBeenCalledOnetime() throws Exception {
 
-        when(fixturesByDaysService.getTeamsNextFixture(563)).thenReturn(nextFixture);
+        when(fixturesByDaysService.getTeamsNextFixture(anyInt())).thenReturn(nextFixture);
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
@@ -175,7 +175,7 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsWeatherForFixtureModelObject() throws Exception {
 
-        when(fixturesByDaysService.getTeamsNextFixture(563)).thenReturn(nextFixture);
+        when(fixturesByDaysService.getTeamsNextFixture(anyInt())).thenReturn(nextFixture);
         when(weatherForecastForFixtureService.retrieveWeatherForecastForFixture(nextFixture))
                 .thenReturn(new WeatherFixture());
 
@@ -191,14 +191,14 @@ public class MyFootballTeamControllerTest {
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(fixturesByDaysService, times(1)).getTeamsNextFixture(563);
+        verify(fixturesByDaysService, times(1)).getTeamsNextFixture(anyInt());
 
     }
 
     @Test
     public void assertThatMyFootballTeamControllerHasModelObjectOfTeamsNextFixture() throws Exception {
 
-        when(fixturesByDaysService.getTeamsNextFixture(563)).thenReturn(new Fixture());
+        when(fixturesByDaysService.getTeamsNextFixture(anyInt())).thenReturn(new Fixture());
 
         mockMvc.perform(get("/myFootballTeam")).andExpect(status().isOk())
                 .andExpect(model().attributeExists("teamsNextFixture"));
@@ -211,14 +211,14 @@ public class MyFootballTeamControllerTest {
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(clubDetailsService, times(1)).retrieveClubDetails("westhamunitedfc");
+        verify(clubDetailsService, times(1)).retrieveClubDetails(anyString());
 
     }
 
     @Test
     public void assertThatMyFootballTeamControllerHasModelObjectOfClubDetails() throws Exception {
 
-        when(clubDetailsService.retrieveClubDetails("westhamunitedfc")).thenReturn(new ClubDetails());
+        when(clubDetailsService.retrieveClubDetails(anyString())).thenReturn(new ClubDetails());
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
