@@ -26,3 +26,28 @@
     <div class="col-md-1"></div>
 
 </div>
+
+<div class="row">
+
+    <div class="col-md-1"></div>
+
+    <div class="col-md-10">
+        <p>
+            <h4> <b>Head 2 Head</b></h4>
+        </p>
+        <table class="table">
+            <c:forEach var="form" items="${previousForm}">
+                <tr>
+                    <td><c:out value="${form.homeTeam}"/></td>
+                    <td><c:out value="${form.goalsHomeTeam}"/></td>
+                    <td><b>vs.</b></td>
+                    <td><c:out value="${form.goalsAwayTeam}"/></td>
+                    <td><c:out value="${form.awayTeam}"/></td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
+
+    <div class="col-md-1"></div>
+
+</div>

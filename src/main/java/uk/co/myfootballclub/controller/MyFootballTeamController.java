@@ -1,5 +1,6 @@
 package uk.co.myfootballclub.controller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,8 @@ public class MyFootballTeamController {
     private TeamsDropdownService teamsDropdownService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PastFormVsNextOpponentService pastFormService;
 
     private static final String DISPLAY_FOOTBALL_TEAM_VIEW = "displayFootballTeam";
     private static final int THIRTY_DAYS = 30;
@@ -54,7 +57,7 @@ public class MyFootballTeamController {
         Team footballClub = clubService.retrieveFootballClubById(lgdInUser.getMyFootballClub());
         mav.addObject(footballClub);
 
-        String teamName = footballClub.getName().replaceAll("\\p{Z}", "").toLowerCase();
+        String teamName = StringUtils.deleteWhitespace(footballClub.getName()).toLowerCase();
         displayClubDetails(mav, teamName);
 
         displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub());
@@ -91,6 +94,12 @@ public class MyFootballTeamController {
         // Retrieve next fixture for given team
         Fixture nextFixture = fixturesService.getTeamsNextFixture(teamId);
         mav.addObject("teamsNextFixture", nextFixture);
+
+        // TODO - Remove hardcoded nextOpposition
+        // TODO - Apply sorting by Date
+        // TODO - Remove any future fixtures with -1 as score (or modify
+        List<Fixture> previousForm = pastFormService.retrievePastFormAgainstNextOpponent(teamId, "Leicester City");
+        mav.addObject("previousForm", previousForm);
 
         // Retrieve weather forecast for next fixture - write service method to retrieve next fixture
         mav.addObject("weatherForFixture", weatherService.retrieveWeatherForecastForFixture(nextFixture));

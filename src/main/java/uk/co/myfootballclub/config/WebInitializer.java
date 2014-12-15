@@ -23,8 +23,6 @@ public class WebInitializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
         ctx.setConfigLocations(new String[]{"uk.co.myfootballclub.config"});
 
-        ctx.setServletContext(servletContext);
-
         servletContext.addListener(new ContextLoaderListener(ctx));
 
         ServletRegistration.Dynamic servlet = servletContext.addServlet("MyFootballClub", new DispatcherServlet(ctx));

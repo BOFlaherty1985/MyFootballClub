@@ -5,7 +5,7 @@
 
     <div class="col-md-5">
         <p>
-        <h4><b>Upcoming Fixtures</b></h4>
+            <h4><b>Upcoming Fixtures</b></h4>
         </p>
         <p>
         <table class="table">
@@ -23,7 +23,7 @@
 
     <div class="col-md-5">
         <p>
-        <h4> <b>Previous Results</b></h4>
+            <h4> <b>Previous Results</b></h4>
         </p>
         <p>
         <table class="table">
