@@ -8,6 +8,18 @@
         <script src="${pageContext.request.contextPath}/resources/bootstrap/js/bootstrap.min.js"></script>
         <link href="${pageContext.request.contextPath}/resources/bootstrap/css/bootstrap.css" rel="stylesheet">
 
+        <!-- Ajax Trigger -->
+        <script src="${pageContext.request.contextPath}/resources/js/displayFixtureByDays.js"></script>
+
+        <script type="text/javascript">
+
+            function daySelection(value, typeOfFixture, divId) {
+                displayFixtureByDays(value, typeOfFixture, divId);
+            }
+
+
+        </script>
+
     </head>
 
     <body style="background: ${clubDetails.clubColour}">
@@ -22,6 +34,7 @@
                     <!-- Register User Modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal"
                             data-target=".bs-example-modal-lg">Register User</button>
+
                 </div>
 
                 <div class="col-md-1"></div>

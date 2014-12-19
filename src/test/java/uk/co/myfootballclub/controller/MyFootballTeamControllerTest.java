@@ -72,6 +72,8 @@ public class MyFootballTeamControllerTest {
                 .setViewResolvers(viewResolver)
                 .build();
 
+        when(fixturesByDaysService.getNextOpponentForTeam(any(Fixture.class), anyString())).thenReturn("nextOpponent");
+
     }
 
     @Test
@@ -225,6 +227,5 @@ public class MyFootballTeamControllerTest {
         .andExpect(model().attributeExists("clubDetails"));
 
     }
-
 
 }

@@ -60,7 +60,7 @@ public class MyFootballTeamController {
         String teamName = StringUtils.deleteWhitespace(footballClub.getName()).toLowerCase();
         displayClubDetails(mav, teamName);
 
-        displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub());
+        displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub(), footballClub.getName());
 
         displayFixturesAndResultsFromLast30days(mav, lgdInUser.getMyFootballClub());
 
@@ -89,16 +89,17 @@ public class MyFootballTeamController {
 
     }
 
-    private void displayNextFixtureAndCorrespondingWeather(ModelAndView mav, int teamId) throws Exception {
+    private void displayNextFixtureAndCorrespondingWeather(ModelAndView mav, int teamId, String myFootballClub) throws Exception {
 
         // Retrieve next fixture for given team
         Fixture nextFixture = fixturesService.getTeamsNextFixture(teamId);
         mav.addObject("teamsNextFixture", nextFixture);
 
-        // TODO - Remove hardcoded nextOpposition
         // TODO - Apply sorting by Date
-        // TODO - Remove any future fixtures with -1 as score (or modify
-        List<Fixture> previousForm = pastFormService.retrievePastFormAgainstNextOpponent(teamId, "Leicester City");
+        // TODO - Remove any future fixtures with -1 as score (or modify)
+        String nextOpponent = fixturesService.getNextOpponentForTeam(nextFixture, myFootballClub);
+
+        List<Fixture> previousForm = pastFormService.retrievePastFormAgainstNextOpponent(teamId, nextOpponent);
         mav.addObject("previousForm", previousForm);
 
         // Retrieve weather forecast for next fixture - write service method to retrieve next fixture

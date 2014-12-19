@@ -1,5 +1,6 @@
 package uk.co.myfootballclub.service;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,9 @@ public class FixturesByTeamService extends AbstractService {
     @Autowired
     private RestTemplate restTemplate;
 
+    private static final String NEXT_FIXTURE = "n";
+    private static final String PREVIOUS_FIXTURE = "p";
+
     /**
      * getFixturesByDays() returns next or past fixture (results) for a given team based on the number of days parameter.
      *
@@ -37,11 +41,11 @@ public class FixturesByTeamService extends AbstractService {
      * @return
      * @throws InvalidFixtureTypeException
      */
-    public List<Fixture> getFixturesByDays(Object teamId, Object fixtureType, Object numberOfDays) throws InvalidFixtureTypeException {
+    public List<Fixture> getFixturesByDays(int teamId, String fixtureType, int numberOfDays) throws InvalidFixtureTypeException {
 
         ResponseEntity<Fixture[]> fixturesResp;
 
-        if(fixtureType.equals("n") || fixtureType.equals("p")) {
+        if(fixtureType.equals(NEXT_FIXTURE) || fixtureType.equals(PREVIOUS_FIXTURE)) {
 
             fixturesResp = restTemplate.exchange(format("%s%s/fixtures?timeFrame=%s%s", FIXTURES_DATA_URL,
                     teamId, fixtureType, numberOfDays), HttpMethod.GET, generateRequestHeaders(), Fixture[].class);
@@ -51,6 +55,11 @@ public class FixturesByTeamService extends AbstractService {
         }
 
         Fixture[] fixturesList = fixturesResp.getBody();
+
+        // reverse previous fixtures array to display latest fixture first
+        if(fixtureType.equals(PREVIOUS_FIXTURE)) {
+            ArrayUtils.reverse(fixturesList);
+        }
 
         return Arrays.asList(fixturesList);
     }
@@ -63,6 +72,11 @@ public class FixturesByTeamService extends AbstractService {
         Fixture[] fixture = fixtureRequest.getBody();
 
         return fixture[0];
+    }
+
+    public String getNextOpponentForTeam(Fixture nextFixture, String myFootballClub) {
+        return (nextFixture.getHomeTeam().equals(myFootballClub) ? nextFixture.getAwayTeam() :
+                nextFixture.getHomeTeam());
     }
 
 }
