@@ -50,7 +50,8 @@ public class MyFootballTeamController {
     public ModelAndView myFootballTeamDisplay(ModelAndView mav) throws Exception {
 
         // retrieve logged in user
-        User lgdInUser = userRepository.findOne(1L);
+        User lgdInUser = userRepository.findOne(15L);
+        mav.addObject("activeUser", lgdInUser);
 
         setupRegisterUserModal(mav);
 

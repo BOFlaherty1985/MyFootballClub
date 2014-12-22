@@ -22,7 +22,7 @@
             <c:forEach var="ranking" items="${leagueStandings.ranking}">
                 <tr>
                     <td><c:out value="${ranking.rank}"/></td>
-                    <td><c:out value="${ranking.team}"/></td>
+                    <td id="team_${ranking.rank}"><c:out value="${ranking.team}"/></td>
                     <td><c:out value="${ranking.goals}"/></td>
                     <td><c:out value="${ranking.goalsAgainst}"/></td>
                     <td><c:out value="${ranking.goalDifference}"/></td>

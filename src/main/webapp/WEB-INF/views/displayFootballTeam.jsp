@@ -10,6 +10,8 @@
 
         <!-- Ajax Trigger -->
         <script src="${pageContext.request.contextPath}/resources/js/displayFixtureByDays.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/leagueStandings.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/js/headToHead.js"></script>
 
         <script type="text/javascript">
 
@@ -17,12 +19,19 @@
                 displayFixtureByDays(value, typeOfFixture, divId);
             }
 
+            $( document ).ready(function() {
+                hightlightMyFootballClubInLeagueTable();
+                determineHeadToHeadRowColour();
+            });
 
         </script>
 
     </head>
 
     <body style="background: ${clubDetails.clubColour}">
+
+        <form:hidden id="myFootballClubId" path="activeUser.myFootballClub" value="${activeUser.myFootballClub}"/>
+        <form:hidden id="myFootballClub" path="team.name" value="${team.name}"/>
 
         <div class="container" style="background: white">
 

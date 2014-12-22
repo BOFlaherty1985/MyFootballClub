@@ -5,10 +5,13 @@
 const previousResultsDiv = '#previousResultsDiv';
 
 function displayFixtureByDays(noOfDays, typeOfFixture, divId) {
+
+    var myFootballClubId = $('#myFootballClubId').val();
+
     $.ajax( {
         type: "POST",
         url: "http://localhost:8080/MyFootballClub/retrieveFixturesByDays",
-        data: { teamId:  563, numberOfDays: noOfDays, typeOfFixture: typeOfFixture },
+        data: { teamId:  myFootballClubId, numberOfDays: noOfDays, typeOfFixture: typeOfFixture },
         success: function(data) {
 
             var json = jQuery.parseJSON(data);
@@ -21,26 +24,13 @@ function displayFixtureByDays(noOfDays, typeOfFixture, divId) {
 
                 var tableRow = $("<tr>");
 
-                var home_td = $("<td>").html("<td>" + fixture.homeTeam + "</td>");
-
-                var goalsHomeTeam;
-
-                if(divId == previousResultsDiv) {
-                    goalsHomeTeam = $("<td>").html("<td>" + fixture.goalsHomeTeam + "</td>");
-                }
-
-
                 var vs_td = $("<td>").html("<td><b> vs. </b></td>");
 
-                var goalsAwayTeam;
+                tableRow.append(displayNameOfTeam(fixture.homeTeam))
+                    .append(displayGoalsByTeam(fixture.goalsHomeTeam)).
+                    append(vs_td).append(displayGoalsByTeam(fixture.goalsAwayTeam))
+                    .append(displayNameOfTeam(fixture.awayTeam));
 
-                if(divId == previousResultsDiv) {
-                    goalsAwayTeam = $("<td>").html("<td>" + fixture.goalsAwayTeam + "</td>");
-                }
-
-                var away_td = $("<td>").html("<td>" + fixture.awayTeam + "</td>");
-
-                tableRow.append(home_td).append(goalsHomeTeam).append(vs_td).append(goalsAwayTeam).append(away_td);
                 table.append(tableRow);
 
             });
@@ -50,4 +40,20 @@ function displayFixtureByDays(noOfDays, typeOfFixture, divId) {
         }
 
     })
+
+    function displayNameOfTeam(teamName) {
+        return $("<td>").html("<td>" + teamName + "</td>");
+    }
+
+    function displayGoalsByTeam(value) {
+
+        var goalsByTeam;
+
+        if(divId == previousResultsDiv) {
+            goalsByTeam = goalsAwayTeam = $("<td>").html("<td>" + value + "</td>");
+        }
+
+        return goalsByTeam;
+    }
+
 };

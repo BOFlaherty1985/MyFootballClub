@@ -36,13 +36,13 @@
             <h4> <b>Head 2 Head</b></h4>
         </p>
         <table class="table">
-            <c:forEach var="form" items="${previousForm}">
-                <tr>
-                    <td><c:out value="${form.homeTeam}"/></td>
-                    <td><c:out value="${form.goalsHomeTeam}"/></td>
+            <c:forEach var="form" varStatus="f" items="${previousForm}">
+                <tr id="headtohead_${f.count}">
+                    <td id="homeTeam"><c:out value="${form.homeTeam}"/></td>
+                    <td id="homeGoals"><c:out value="${form.goalsHomeTeam}"/></td>
                     <td><b>vs.</b></td>
-                    <td><c:out value="${form.goalsAwayTeam}"/></td>
-                    <td><c:out value="${form.awayTeam}"/></td>
+                    <td id="awayGoals"><c:out value="${form.goalsAwayTeam}"/></td>
+                    <td id="awayTeam"><c:out value="${form.awayTeam}"/></td>
                 </tr>
             </c:forEach>
         </table>
