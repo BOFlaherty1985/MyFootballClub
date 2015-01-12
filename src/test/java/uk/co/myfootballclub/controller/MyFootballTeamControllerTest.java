@@ -20,10 +20,7 @@ import uk.co.myfootballclub.model.ClubDetails;
 import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.league.League;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
-import uk.co.myfootballclub.service.ClubDetailsService;
-import uk.co.myfootballclub.service.FixturesByTeamService;
-import uk.co.myfootballclub.service.LeagueByMatchDayService;
-import uk.co.myfootballclub.service.WeatherForecastForFixtureService;
+import uk.co.myfootballclub.service.*;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -49,13 +46,13 @@ public class MyFootballTeamControllerTest {
     private MyFootballTeamController controller;
 
     @Mock
+    private IRetrieveDataByInt retrieveDataByInt;
+    @Mock
+    private IRetrieveDataByString retrieveDataByString;
+    @Mock
     private FixturesByTeamService fixturesByDaysService;
     @Mock
-    private LeagueByMatchDayService leagueByMatchDayService;
-    @Mock
     private WeatherForecastForFixtureService weatherForecastForFixtureService;
-    @Mock
-    private ClubDetailsService clubDetailsService;
 
     @Mock
     Fixture nextFixture;
@@ -134,7 +131,7 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsLeagueModelObject() throws Exception {
 
-        when(leagueByMatchDayService.retrieveLeagueStandings(354)).thenReturn(new League());
+        when(retrieveDataByInt.retrieveDataByInt(354)).thenReturn(new League());
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
@@ -159,7 +156,7 @@ public class MyFootballTeamControllerTest {
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(leagueByMatchDayService, atLeastOnce()).retrieveLeagueStandings(anyInt());
+        verify(retrieveDataByInt, atLeastOnce()).retrieveDataByInt(anyInt());
 
     }
 
@@ -213,14 +210,14 @@ public class MyFootballTeamControllerTest {
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(clubDetailsService, times(1)).retrieveClubDetails(anyString());
+        verify(retrieveDataByString, times(1)).retrieveDataByString(anyString());
 
     }
 
     @Test
     public void assertThatMyFootballTeamControllerHasModelObjectOfClubDetails() throws Exception {
 
-        when(clubDetailsService.retrieveClubDetails(anyString())).thenReturn(new ClubDetails());
+        when(retrieveDataByString.retrieveDataByString(anyString())).thenReturn(new ClubDetails());
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())

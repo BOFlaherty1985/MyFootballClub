@@ -26,15 +26,15 @@ import java.util.List;
 public class MyFootballTeamController {
 
     @Autowired
-    private FixturesByTeamService fixturesService;
+    private IRetrieveDataByInt retrieveDataByInt;
     @Autowired
-    private LeagueByMatchDayService leagueService;
+    private IRetrieveDataByString retrieveDataByString;
+    @Autowired
+    private FixturesByTeamService fixturesService;
     @Autowired
     private WeatherForecastForFixtureService weatherService;
     @Autowired
     private ClubService clubService;
-    @Autowired
-    private ClubDetailsService clubDetailsService;
     @Autowired
     private TeamsDropdownService teamsDropdownService;
     @Autowired
@@ -50,7 +50,7 @@ public class MyFootballTeamController {
     public ModelAndView myFootballTeamDisplay(ModelAndView mav) throws Exception {
 
         // retrieve logged in user
-        User lgdInUser = userRepository.findOne(15L);
+        User lgdInUser = userRepository.findOne(1L);
         mav.addObject("activeUser", lgdInUser);
 
         setupRegisterUserModal(mav);
@@ -61,9 +61,14 @@ public class MyFootballTeamController {
         String teamName = StringUtils.deleteWhitespace(footballClub.getName()).toLowerCase();
         displayClubDetails(mav, teamName);
 
-        displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub(), footballClub.getName());
+        /*
+            TODO - Fixtures JSON Marshalling needs changing. Introduction of new base level to data result
+            TODO - Fixtures will not require it's own deserializer
 
-        displayFixturesAndResultsFromLast30days(mav, lgdInUser.getMyFootballClub());
+         */
+        // displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub(), footballClub.getName());
+
+        // displayFixturesAndResultsFromLast30days(mav, lgdInUser.getMyFootballClub());
 
         displayLeagueTable(mav);
 
@@ -83,7 +88,7 @@ public class MyFootballTeamController {
 
         // Display additional club information from json file
         try {
-            mav.addObject("clubDetails", clubDetailsService.retrieveClubDetails(clubName));
+            mav.addObject("clubDetails", retrieveDataByString.retrieveDataByString(clubName));
         } catch (Exception e) {
             System.out.println("Club JSON File Not Found");
         }
@@ -126,7 +131,7 @@ public class MyFootballTeamController {
     }
 
     private League retrieveLeagueStandingsByLeagueId() {
-        return leagueService.retrieveLeagueStandings(PREMIER_LEAGUE_ID);
+        return (League) retrieveDataByInt.retrieveDataByInt(PREMIER_LEAGUE_ID);
     }
 
     private List<Fixture> retrieveFixturesByDay(int teamId) throws InvalidFixtureTypeException {

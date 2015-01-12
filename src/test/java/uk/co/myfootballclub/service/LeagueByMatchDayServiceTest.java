@@ -59,7 +59,7 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
         )).thenReturn(responseEntity);
 
         assertNotNull("retrieveLeagueStanding() should not return a null value.",
-                service.retrieveLeagueStandings(100));
+                service.retrieveDataByInt(100));
 
     }
 

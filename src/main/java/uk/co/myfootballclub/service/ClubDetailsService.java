@@ -20,19 +20,20 @@ import static java.lang.String.format;
  * @project MyFootballClub
  */
 @Component
-public class ClubDetailsService {
+public class ClubDetailsService implements IRetrieveDataByString<ClubDetails, Long> {
 
     private String CLUB_DETAILS_PATH = "/resources/teamdata/premierleague/";
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    public ClubDetails retrieveClubDetails(String clubName) throws IOException, ClubNameIsNotValidException {
+    @Override
+    public ClubDetails retrieveDataByString(String input) throws ClubNameIsNotValidException {
 
         ClubDetails clubDetails;
 
         try {
-            clubDetails = objectMapper.readValue(retrieveJsonFileForClub(clubName), ClubDetails.class);
+            clubDetails = objectMapper.readValue(retrieveJsonFileForClub(input), ClubDetails.class);
         } catch (IOException e) {
             throw new ClubNameIsNotValidException("ClubName Parameter Is Invalid.");
         }
@@ -47,5 +48,6 @@ public class ClubDetailsService {
         return getClass().getClassLoader().getResourceAsStream(format("%s%s.json", CLUB_DETAILS_PATH,
                 fileName));
     }
+
 
 }

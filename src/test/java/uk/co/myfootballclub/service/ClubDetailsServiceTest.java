@@ -49,7 +49,7 @@ public class ClubDetailsServiceTest {
 
     @Test
     public void retrieveClubDetails_methodReturn_notNull() throws Exception {
-        assertNotNull("retrieveClubDetails() is not null." + clubDetailsService.retrieveClubDetails("clubName"));
+        assertNotNull("retrieveClubDetails() is not null." + clubDetailsService.retrieveDataByString("clubName"));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(new ClubDetails());
 
-        Object clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        Object clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertTrue("Object is instanceOf ClubDetails.", clubDetails instanceof ClubDetails);
 
     }
@@ -71,7 +71,7 @@ public class ClubDetailsServiceTest {
         ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
         when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
-        clubDetailsService.retrieveClubDetails("clubName");
+        clubDetailsService.retrieveDataByString("clubName");
         verify(objectMapper, times(1)).readValue(inputStream, ClubDetails.class);
 
     }
@@ -87,7 +87,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(result);
 
-        ClubDetails clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        ClubDetails clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertNotNull("ClubDetails getClubNickname() is not null", clubDetails.getClubNickname());
         assertEquals("CluBDetails Nickname is equal to The Testers", result.getClubNickname(),
                 clubDetails.getClubNickname());
@@ -105,7 +105,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(result);
 
-        ClubDetails clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        ClubDetails clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertNotNull("ClubDetails getClubFounded() is not null", clubDetails.getClubFounded());
         assertEquals("ClubDetails getClubFounded is equal to 1900", result.getClubFounded(), clubDetails.getClubFounded());
 
@@ -123,7 +123,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(result);
 
-        ClubDetails clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        ClubDetails clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertNotNull("ClubDetails getClubStadium() is not null", clubDetails.getClubStadium());
         assertEquals("ClubDetails getClubStadium() is equal to London Stadium", result.getClubStadium(),
                 clubDetails.getClubStadium());
@@ -141,7 +141,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(result);
 
-        ClubDetails clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        ClubDetails clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertNotNull("ClubDetails getClubCapacity() is not null", clubDetails.getClubCapacity());
         assertEquals("ClubDetails getClubCapacity() is equal to 20,000", result.getClubCapacity(),
                 clubDetails.getClubCapacity());
@@ -159,7 +159,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(result);
 
-        ClubDetails clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        ClubDetails clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertNotNull("ClubDetails getClubWebsite() is not null", clubDetails.getClubWebsite());
         assertEquals("ClubDetails getClubWebsite() is equal to http://website.com", result.getClubWebsite(),
                 clubDetails.getClubWebsite());
@@ -177,7 +177,7 @@ public class ClubDetailsServiceTest {
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(result);
 
-        ClubDetails clubDetails = clubDetailsService.retrieveClubDetails("clubName");
+        ClubDetails clubDetails = clubDetailsService.retrieveDataByString("clubName");
         assertNotNull("ClubDetails getClubWebsite() is not null", clubDetails.getClubFacebook());
         assertEquals("ClubDetails getClubWebsite() is equal to http://website.com", result.getClubFacebook(),
                 clubDetails.getClubFacebook());
@@ -188,7 +188,7 @@ public class ClubDetailsServiceTest {
     public void throwExceptionWhenClubNameParameterIsInvalidAndJsonFileIsNotFound() {
 
         try {
-            clubDetailsService.retrieveClubDetails(null);
+            clubDetailsService.retrieveDataByString(null);
             fail("Exception thrown when clubName parameter is invalid.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,7 +202,7 @@ public class ClubDetailsServiceTest {
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenThrow(new IOException());
 
         try {
-            clubDetailsService.retrieveClubDetails("abcdefg");
+            clubDetailsService.retrieveDataByString("abcdefg");
             fail("Exception thrown when clubName parameter is invalid.");
         } catch (ClubNameIsNotValidException e) {
             e.printStackTrace();
@@ -216,7 +216,7 @@ public class ClubDetailsServiceTest {
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenThrow(new IOException());
 
         try {
-            clubDetailsService.retrieveClubDetails("abcdefg");
+            clubDetailsService.retrieveDataByString("abcdefg");
             fail("Exception thrown when clubName parameter is invalid.");
         } catch (ClubNameIsNotValidException e) {
             assertEquals("ClubNameIsNotvalidException error message is equal to clubName Parameter Is Invalid.",

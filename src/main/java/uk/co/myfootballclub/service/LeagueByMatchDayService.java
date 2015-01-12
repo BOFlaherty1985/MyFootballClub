@@ -18,19 +18,21 @@ import uk.co.myfootballclub.model.league.League;
 import static java.lang.String.format;
 
 @Service
-public class LeagueByMatchDayService extends AbstractService {
+public class LeagueByMatchDayService extends AbstractService implements IRetrieveDataByInt<League, Long> {
 
     @Autowired
     private RestTemplate restTemplate;
 
     private static final String LEAGUE_STANDING_DATA_URL = "http://www.football-data.org/soccerseasons";
 
-    public League retrieveLeagueStandings(int leagueId) {
+    @Override
+    public League retrieveDataByInt(int input) {
 
-        ResponseEntity<League> leagueRequest = restTemplate.exchange(format("%s/%s/ranking", LEAGUE_STANDING_DATA_URL, leagueId),
+        ResponseEntity<League> leagueRequest = restTemplate.exchange(format("%s/%s/ranking", LEAGUE_STANDING_DATA_URL, input),
                 HttpMethod.GET, generateRequestHeaders(), League.class);
 
         return leagueRequest.getBody();
+
     }
 
     public League retrieveLeagueStandingsByMatchDay(int leagueId, int matchDay) {
