@@ -1,7 +1,7 @@
 MyFootballClub
 ==============
 
-Note - Due to API update (Alpha) by football-data.org. Current code base needs updating to use new API
+Note - Due to API update 18/01/2015 (Alpha) by football-data.org. Current code base needs updating to use new API
 
 Displays real time data for a given football club configured by the user. Data extracted using Spring RESTful services from http://www.football-data.org/.
 
