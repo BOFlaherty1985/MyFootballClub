@@ -1,5 +1,9 @@
 package uk.co.myfootballclub.model.league;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * League Ranking Model Object.
  *
@@ -7,37 +11,50 @@ package uk.co.myfootballclub.model.league;
  * @date Created on: 02/12/2014
  * @project MyFootballClub
  */
-public class LeagueRanking {
-    private int rank;
-    private String team;
-    private String crestURL;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class LeagueStanding {
+
+    @JsonProperty("_links")
+    @JsonIgnore
+    private StandingLink link;
+    private int position;
+    private String teamName;
+    private int playedGames;
     private int points;
     private int goals;
     private int goalsAgainst;
     private int goalDifference;
 
-    public int getRank() {
-        return rank;
+    public StandingLink getLink() {
+        return link;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setLink(StandingLink link) {
+        this.link = link;
     }
 
-    public String getTeam() {
-        return team;
+    public int getPosition() {
+        return position;
     }
 
-    public void setTeam(String team) {
-        this.team = team;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
-    public String getCrestURL() {
-        return crestURL;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setCrestURL(String crestURL) {
-        this.crestURL = crestURL;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public int getPlayedGames() {
+        return playedGames;
+    }
+
+    public void setPlayedGames(int playedGames) {
+        this.playedGames = playedGames;
     }
 
     public int getPoints() {
@@ -74,10 +91,11 @@ public class LeagueRanking {
 
     @Override
     public String toString() {
-        return "LeagueRanking{" +
-                "rank=" + rank +
-                ", team='" + team + '\'' +
-                ", crestURL='" + crestURL + '\'' +
+        return "LeagueStanding{" +
+                "link=" + link +
+                ", position=" + position +
+                ", teamName='" + teamName + '\'' +
+                ", playedGames=" + playedGames +
                 ", points=" + points +
                 ", goals=" + goals +
                 ", goalsAgainst=" + goalsAgainst +

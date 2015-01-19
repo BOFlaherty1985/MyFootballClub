@@ -10,8 +10,11 @@ import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.Team;
 import uk.co.myfootballclub.model.league.League;
 import uk.co.myfootballclub.persistence.dao.UserRepository;
+import uk.co.myfootballclub.persistence.domain.TeamList;
 import uk.co.myfootballclub.persistence.domain.User;
-import uk.co.myfootballclub.service.*;
+import uk.co.myfootballclub.service.impl.PastFormVsNextOpponentService;
+import uk.co.myfootballclub.service.impl.WeatherForecastForFixtureService;
+import uk.co.myfootballclub.service.interfaces.*;
 
 import java.util.List;
 
@@ -26,17 +29,17 @@ import java.util.List;
 public class MyFootballTeamController {
 
     @Autowired
-    private IRetrieveDataByInt retrieveDataByInt;
+    private ITeamService teamService;
     @Autowired
-    private IRetrieveDataByString retrieveDataByString;
+    private ILeagueService leagueService;
     @Autowired
-    private FixturesByTeamService fixturesService;
+    private IClubDetailsService clubDetailsService;
+    @Autowired
+    private IFixtureService fixtureService;
     @Autowired
     private WeatherForecastForFixtureService weatherService;
     @Autowired
-    private ClubService clubService;
-    @Autowired
-    private TeamsDropdownService teamsDropdownService;
+    private IDropdownService<TeamList> teamsDropdownService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -55,7 +58,7 @@ public class MyFootballTeamController {
 
         setupRegisterUserModal(mav);
 
-        Team footballClub = clubService.retrieveFootballClubById(lgdInUser.getMyFootballClub());
+        Team footballClub = teamService.retrieveDataByInt(lgdInUser.getMyFootballClub());
         mav.addObject(footballClub);
 
         String teamName = StringUtils.deleteWhitespace(footballClub.getName()).toLowerCase();
@@ -64,7 +67,6 @@ public class MyFootballTeamController {
         /*
             TODO - Fixtures JSON Marshalling needs changing. Introduction of new base level to data result
             TODO - Fixtures will not require it's own deserializer
-
          */
         // displayNextFixtureAndCorrespondingWeather(mav, lgdInUser.getMyFootballClub(), footballClub.getName());
 
@@ -81,14 +83,14 @@ public class MyFootballTeamController {
 
         // setup register user form
         mav.addObject(new User());
-        mav.addObject("teamsForLeague", teamsDropdownService.retrieveListOfTeams(PREMIER_LEAGUE_ID));
+        mav.addObject("teamsForLeague", teamsDropdownService.retrieveDropdownListItems(PREMIER_LEAGUE_ID));
     }
 
     private void displayClubDetails(ModelAndView mav, String clubName) throws Exception {
 
         // Display additional club information from json file
         try {
-            mav.addObject("clubDetails", retrieveDataByString.retrieveDataByString(clubName));
+            mav.addObject("clubDetails", clubDetailsService.retrieveDataByString(clubName));
         } catch (Exception e) {
             System.out.println("Club JSON File Not Found");
         }
@@ -98,12 +100,12 @@ public class MyFootballTeamController {
     private void displayNextFixtureAndCorrespondingWeather(ModelAndView mav, int teamId, String myFootballClub) throws Exception {
 
         // Retrieve next fixture for given team
-        Fixture nextFixture = fixturesService.getTeamsNextFixture(teamId);
+        Fixture nextFixture = fixtureService.retrieveDataByInt(teamId);
         mav.addObject("teamsNextFixture", nextFixture);
 
         // TODO - Apply sorting by Date
         // TODO - Remove any future fixtures with -1 as score (or modify)
-        String nextOpponent = fixturesService.getNextOpponentForTeam(nextFixture, myFootballClub);
+        String nextOpponent = fixtureService.getNextOpponentForTeam(nextFixture, myFootballClub);
 
         List<Fixture> previousForm = pastFormService.retrievePastFormAgainstNextOpponent(teamId, nextOpponent);
         mav.addObject("previousForm", previousForm);
@@ -131,15 +133,15 @@ public class MyFootballTeamController {
     }
 
     private League retrieveLeagueStandingsByLeagueId() {
-        return (League) retrieveDataByInt.retrieveDataByInt(PREMIER_LEAGUE_ID);
+        return leagueService.retrieveDataByInt(PREMIER_LEAGUE_ID);
     }
 
     private List<Fixture> retrieveFixturesByDay(int teamId) throws InvalidFixtureTypeException {
-        return fixturesService.getFixturesByDays(teamId, "p", THIRTY_DAYS);
+        return fixtureService.getFixturesByDays(teamId, "p", THIRTY_DAYS);
     }
 
     private List<Fixture> retrieveFixturesByDays(int teamId) throws InvalidFixtureTypeException {
-        return fixturesService.getFixturesByDays(teamId, "n", THIRTY_DAYS);
+        return fixtureService.getFixturesByDays(teamId, "n", THIRTY_DAYS);
     }
 
 }

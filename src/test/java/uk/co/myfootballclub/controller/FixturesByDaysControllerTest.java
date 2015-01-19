@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.Fixture;
-import uk.co.myfootballclub.service.FixturesByTeamService;
+import uk.co.myfootballclub.service.impl.FixturesByTeamService;
 
 import java.util.ArrayList;
 

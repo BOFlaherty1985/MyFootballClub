@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.service;
+package uk.co.myfootballclub.service.impl;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class PastFormVsNextOpponentService extends AbstractService {
         // retrieve results for a maximum NUMBER_OF_YEARS
         for(int i = 0; i < NUMBER_OF_YEARS; i++) {
 
-            ResponseEntity<Fixture[]> teamResultsByYear = restTemplate.exchange("http://www.football-data.org/teams/" +
+            ResponseEntity<Fixture[]> teamResultsByYear = restTemplate.exchange("http://api.football-data.org/alpha/teams/" +
                             teamId + "/fixtures?season=" + currentYear, HttpMethod.GET, generateRequestHeaders(),
                             Fixture[].class);
 

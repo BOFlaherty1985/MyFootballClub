@@ -15,7 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.league.League;
-import uk.co.myfootballclub.model.league.LeagueRanking;
+import uk.co.myfootballclub.model.league.LeagueStanding;
+import uk.co.myfootballclub.service.impl.LeagueByMatchDayService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
     public void assertThatRetrieveLeagueStandingSsNotNull() {
 
         when(responseEntity.getBody()).thenReturn(new League());
-        when(restTemplate.exchange("http://www.football-data.org/soccerseasons/100/ranking", HttpMethod.GET, mockRequestHeaders(), League.class
+        when(restTemplate.exchange("http://api.football-data.org/alpha/soccerseasons/100/ranking", HttpMethod.GET, mockRequestHeaders(), League.class
         )).thenReturn(responseEntity);
 
         assertNotNull("retrieveLeagueStanding() should not return a null value.",
@@ -93,7 +94,7 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
         when(responseEntity.getBody()).thenReturn(new League());
 
         service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
-        verify(restTemplate, times(1)).exchange("http://www.football-data.org/soccerseasons/354/ranking?matchday=1",
+        verify(restTemplate, times(1)).exchange("http://api.football-data.org/alpha/soccerseasons/354/ranking?matchday=1",
                 HttpMethod.GET, mockRequestHeaders(), League.class);
 
     }
@@ -105,8 +106,8 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
         when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
-        assertTrue("League getLeague() has value.",
-                leagueObject.getLeague() != null && !leagueObject.getLeague().isEmpty());
+        assertTrue("League getLeagueCaption() has value.",
+                leagueObject.getLeagueCaption() != null && !leagueObject.getLeagueCaption().isEmpty());
 
     }
 
@@ -130,7 +131,7 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
         assertTrue("League has an instance of LeagueRanking and LeagueRanking is not null.",
-                leagueObject.getRanking() != null);
+                leagueObject.getStanding() != null);
 
     }
 
@@ -142,11 +143,11 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
+        List<LeagueStanding> rankingList = leagueObject.getStanding();
         assertTrue("LeagueRanking size() is not equal to 0.", rankingList.size() != 0);
 
-        for(LeagueRanking ranking : rankingList) {
-            assertTrue("LeagueRanking object has a valid rank value.", ranking.getRank() != 0);
+        for(LeagueStanding ranking : rankingList) {
+            assertTrue("LeagueRanking object has a valid rank value.", ranking.getPosition() != 0);
         }
 
     }
@@ -159,30 +160,12 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
+        List<LeagueStanding> rankingList = leagueObject.getStanding();
         assertTrue("LeagueRanking size() is not equal to 0.", rankingList.size() != 0);
 
-        for(LeagueRanking ranking : rankingList) {
-            assertTrue("LeagueRanking object has a valid rank value.", ranking.getTeam() != null ||
-                !ranking.getTeam().isEmpty());
-        }
-
-    }
-
-    @Test
-    public void assertReturnedLeagueObjectRankingObjectContainsAValidCrestURL() {
-
-        setDefaultRESTLeagueResult(PREMIER_LEAGUE_ID);
-        when(responseEntity.getBody()).thenReturn(setupDefaultLeagueObject());
-
-        League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
-
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
-        assertTrue("LeagueRanking size() is not equal to 0.", rankingList.size() != 0);
-
-        for(LeagueRanking ranking : rankingList) {
-            assertTrue("LeagueRanking object has a valid rank value.", ranking.getCrestURL() != null ||
-                    !ranking.getCrestURL().isEmpty());
+        for(LeagueStanding ranking : rankingList) {
+            assertTrue("LeagueRanking object has a valid rank value.", ranking.getTeamName() != null ||
+                !ranking.getTeamName().isEmpty());
         }
 
     }
@@ -195,10 +178,10 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
+        List<LeagueStanding> rankingList = leagueObject.getStanding();
         assertTrue("LeagueRanking size() is not equal to -1.", rankingList.size() != 0);
 
-        for(LeagueRanking ranking : rankingList) {
+        for(LeagueStanding ranking : rankingList) {
             assertTrue("LeagueRanking object has a valid points value.", ranking.getPoints() != -1);
         }
 
@@ -212,10 +195,10 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
+        List<LeagueStanding> rankingList = leagueObject.getStanding();
         assertTrue("LeagueRanking size() is not equal to -1.", rankingList.size() != 0);
 
-        for(LeagueRanking ranking : rankingList) {
+        for(LeagueStanding ranking : rankingList) {
             assertTrue("LeagueRanking object has a valid Goals value.", ranking.getGoals() != -1);
         }
 
@@ -229,10 +212,10 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
+        List<LeagueStanding> rankingList = leagueObject.getStanding();
         assertTrue("LeagueRanking size() is not equal to -1.", rankingList.size() != 0);
 
-        for(LeagueRanking ranking : rankingList) {
+        for(LeagueStanding ranking : rankingList) {
             assertTrue("LeagueRanking object has a valid GoalsAgainst value.", ranking.getGoalsAgainst() != -1);
         }
 
@@ -246,10 +229,10 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
 
-        List<LeagueRanking> rankingList = leagueObject.getRanking();
+        List<LeagueStanding> rankingList = leagueObject.getStanding();
         assertTrue("LeagueRanking size() is not equal to -1.", rankingList.size() != 0);
 
-        for(LeagueRanking ranking : rankingList) {
+        for(LeagueStanding ranking : rankingList) {
             assertTrue("LeagueRanking object has a valid GoalDifference value.", ranking.getGoalDifference() != -1);
         }
 
@@ -259,14 +242,13 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
     public void assertReturnedLeagueObjectValuesAreEqualToRESTfulServiceJSonResult() {
 
         League restResult = new League();
-        restResult.setLeague("Premier League 2014/2015");
+        restResult.setLeagueCaption("Premier League 2014/2015");
         restResult.setMatchday(13);
 
-        List<LeagueRanking> teamRankingList = new ArrayList<LeagueRanking>();
+        List<LeagueStanding> teamRankingList = new ArrayList<LeagueStanding>();
 
-        LeagueRanking team_one = new LeagueRanking();
-        team_one.setTeam("Chelsea FC");
-        team_one.setCrestURL("http://upload.wikimedia.org/wikipedia/de/5/5c/Chelsea_crest.svg");
+        LeagueStanding team_one = new LeagueStanding();
+        team_one.setTeamName("Chelsea FC");
         team_one.setPoints(33);
         team_one.setGoals(30);
         team_one.setGoalsAgainst(11);
@@ -274,22 +256,21 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
         teamRankingList.add(team_one);
 
-        restResult.setRanking(teamRankingList);
+        restResult.setStanding(teamRankingList);
 
-        when(restTemplate.exchange("http://www.football-data.org/soccerseasons/354/ranking?matchday=1",
+        when(restTemplate.exchange("http://api.football-data.org/alpha/soccerseasons/354/ranking?matchday=1",
                 HttpMethod.GET, mockRequestHeaders(), League.class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(restResult);
 
         League leagueObject = service.retrieveLeagueStandingsByMatchDay(PREMIER_LEAGUE_ID, 1);
-        assertEquals("LeagueObject League Name is Equal to Premier League 2014/2015", restResult.getLeague()
-                            ,leagueObject.getLeague());
+        assertEquals("LeagueObject League Name is Equal to Premier League 2014/2015", restResult.getLeagueCaption()
+                            ,leagueObject.getLeagueCaption());
         assertEquals("LeagueObject MatchDay is Equal to 13", restResult.getMatchday()  ,leagueObject.getMatchday());
 
-        List<LeagueRanking> leagueRankingList = leagueObject.getRanking();
+        List<LeagueStanding> leagueRankingList = leagueObject.getStanding();
 
-        for(LeagueRanking team : leagueRankingList) {
-            assertEquals("LeagueObject Team is Equal to Chelsea FC", team_one.getTeam() , team.getTeam());
-            assertEquals("LeagueObject CrestURL is the correct value.", team_one.getCrestURL() , team.getCrestURL());
+        for(LeagueStanding team : leagueRankingList) {
+            assertEquals("LeagueObject Team is Equal to Chelsea FC", team_one.getTeamName() , team.getTeamName());
             assertEquals("LeagueObject Points is equal to 33.", team_one.getPoints() , team.getPoints());
             assertEquals("LeagueObject Goals is equal to 30.", team_one.getGoals() , team.getGoals());
             assertEquals("LeagueObject GoalsAgainst is equal to 11.", team_one.getGoalsAgainst() , team.getGoalsAgainst());
@@ -300,7 +281,7 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
     }
 
     private void setDefaultRESTLeagueResult(int leagueId) {
-        when(restTemplate.exchange("http://www.football-data.org/soccerseasons/" + leagueId + "/ranking?matchday=1", HttpMethod.GET, mockRequestHeaders(),
+        when(restTemplate.exchange("http://api.football-data.org/alpha/soccerseasons/" + leagueId + "/ranking?matchday=1", HttpMethod.GET, mockRequestHeaders(),
                 League.class)).thenReturn(responseEntity);
     }
 
@@ -308,22 +289,21 @@ public class LeagueByMatchDayServiceTest extends ServiceTest {
 
 
         League league = new League();
-        league.setLeague("Default League Name");
+        league.setLeagueCaption("Default League Name");
         league.setMatchday(1);
 
-        List<LeagueRanking> rankingList = new ArrayList<LeagueRanking>();
+        List<LeagueStanding> rankingList = new ArrayList<LeagueStanding>();
 
-        LeagueRanking rank = new LeagueRanking();
-        rank.setRank(5);
-        rank.setTeam("Team Name Here");
-        rank.setCrestURL("http://crestUrl.com");
+        LeagueStanding rank = new LeagueStanding();
+        rank.setPosition(5);
+        rank.setTeamName("Team Name Here");
         rank.setPoints(30);
         rank.setGoals(15);
         rank.setGoalsAgainst(8);
 
         rankingList.add(rank);
 
-        league.setRanking(rankingList);
+        league.setStanding(rankingList);
 
         return league;
     }

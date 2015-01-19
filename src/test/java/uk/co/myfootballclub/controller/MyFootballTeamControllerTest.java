@@ -18,9 +18,12 @@ import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.ClubDetails;
 import uk.co.myfootballclub.model.Fixture;
+import uk.co.myfootballclub.model.Team;
 import uk.co.myfootballclub.model.league.League;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
-import uk.co.myfootballclub.service.*;
+import uk.co.myfootballclub.persistence.domain.TeamList;
+import uk.co.myfootballclub.service.impl.WeatherForecastForFixtureService;
+import uk.co.myfootballclub.service.interfaces.*;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -46,16 +49,19 @@ public class MyFootballTeamControllerTest {
     private MyFootballTeamController controller;
 
     @Mock
-    private IRetrieveDataByInt retrieveDataByInt;
+    private ITeamService teamService;
     @Mock
-    private IRetrieveDataByString retrieveDataByString;
+    private ILeagueService leagueService;
     @Mock
-    private FixturesByTeamService fixturesByDaysService;
+    private IFixtureService fixtureService;
+    @Mock
+    private IClubDetailsService clubDetailsService;
     @Mock
     private WeatherForecastForFixtureService weatherForecastForFixtureService;
-
     @Mock
-    Fixture nextFixture;
+    private Fixture nextFixture;
+    @Mock
+    private IDropdownService<TeamList> dropdownService;
 
     @Before
     public void setUp() {
@@ -69,7 +75,7 @@ public class MyFootballTeamControllerTest {
                 .setViewResolvers(viewResolver)
                 .build();
 
-        when(fixturesByDaysService.getNextOpponentForTeam(any(Fixture.class), anyString())).thenReturn("nextOpponent");
+        when(fixtureService.getNextOpponentForTeam(any(Fixture.class), anyString())).thenReturn("nextOpponent");
 
     }
 
@@ -84,6 +90,8 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerDefaultRequestMappingIsValidAndReturnsStatus200() throws Exception {
 
+        mockTeam();
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
@@ -91,6 +99,8 @@ public class MyFootballTeamControllerTest {
 
     @Test
     public void verifyMyFootballTeamControllerDefaultMappingReturnsViewNameDisplayFootballTeam() throws Exception {
+
+        mockTeam();
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
@@ -100,6 +110,8 @@ public class MyFootballTeamControllerTest {
 
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsTeamModelObject() throws Exception {
+
+        mockTeam();
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
@@ -111,6 +123,8 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsFixtureModelObject() throws Exception {
 
+        mockTeam();
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("displayFootballTeam"))
@@ -120,6 +134,8 @@ public class MyFootballTeamControllerTest {
 
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsResultsModelObject() throws Exception {
+
+        mockTeam();
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
@@ -131,7 +147,9 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsLeagueModelObject() throws Exception {
 
-        when(retrieveDataByInt.retrieveDataByInt(354)).thenReturn(new League());
+        mockTeam();
+
+        when(leagueService.retrieveDataByInt(354)).thenReturn(new League());
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
@@ -143,27 +161,33 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyFixturesByDayServiceHasBeenCalledOneTime() throws Exception {
 
+        mockTeam();
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(fixturesByDaysService, atLeastOnce()).getFixturesByDays(anyInt(), Matchers.<String> any(), anyInt());
+        verify(fixtureService, atLeastOnce()).getFixturesByDays(anyInt(), Matchers.<String> any(), anyInt());
 
     }
 
     @Test
     public void verifyLeagueByMatchDayServiceHasBeenCalledAtLeastOnce() throws Exception {
 
+        mockTeam();
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(retrieveDataByInt, atLeastOnce()).retrieveDataByInt(anyInt());
+        verify(teamService, atLeastOnce()).retrieveDataByInt(anyInt());
 
     }
 
     @Test
     public void verifyWeatherForecastForFixtureServiceHasBeenCalledOnetime() throws Exception {
 
-        when(fixturesByDaysService.getTeamsNextFixture(anyInt())).thenReturn(nextFixture);
+        mockTeam();
+
+        when(fixtureService.retrieveDataByInt(anyInt())).thenReturn(nextFixture);
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
@@ -174,7 +198,7 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerPageDisplayContainsWeatherForFixtureModelObject() throws Exception {
 
-        when(fixturesByDaysService.getTeamsNextFixture(anyInt())).thenReturn(nextFixture);
+        when(fixtureService.retrieveDataByInt(anyInt())).thenReturn(nextFixture);
         when(weatherForecastForFixtureService.retrieveWeatherForecastForFixture(nextFixture))
                 .thenReturn(new WeatherFixture());
 
@@ -187,17 +211,21 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerDisplaysTeamsNextFixtureHasBeenCalledForTeam563() throws Exception {
 
+        mockTeam();
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(fixturesByDaysService, times(1)).getTeamsNextFixture(anyInt());
+        verify(fixtureService, times(1)).retrieveDataByInt(anyInt());
 
     }
 
     @Test
     public void assertThatMyFootballTeamControllerHasModelObjectOfTeamsNextFixture() throws Exception {
 
-        when(fixturesByDaysService.getTeamsNextFixture(anyInt())).thenReturn(new Fixture());
+        mockTeam();
+
+        when(fixtureService.retrieveDataByInt(anyInt())).thenReturn(new Fixture());
 
         mockMvc.perform(get("/myFootballTeam")).andExpect(status().isOk())
                 .andExpect(model().attributeExists("teamsNextFixture"));
@@ -207,22 +235,33 @@ public class MyFootballTeamControllerTest {
     @Test
     public void verifyMyFootballTeamControllerClubDetailsServiceHasBeenCalledForAGivenTeam() throws Exception {
 
+        mockTeam();
+
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk());
 
-        verify(retrieveDataByString, times(1)).retrieveDataByString(anyString());
+        verify(clubDetailsService, times(1)).retrieveDataByString(anyString());
 
     }
 
     @Test
     public void assertThatMyFootballTeamControllerHasModelObjectOfClubDetails() throws Exception {
 
-        when(retrieveDataByString.retrieveDataByString(anyString())).thenReturn(new ClubDetails());
+        mockTeam();
+
+        when(clubDetailsService.retrieveDataByString(anyString())).thenReturn(new ClubDetails());
 
         mockMvc.perform(get("/myFootballTeam"))
                 .andExpect(status().isOk())
         .andExpect(model().attributeExists("clubDetails"));
 
+    }
+
+    private void mockTeam() {
+        Team mockTeam = new Team();
+        mockTeam.setName("Club Example Utd");
+
+        when(teamService.retrieveDataByInt(563)).thenReturn(mockTeam);
     }
 
 }

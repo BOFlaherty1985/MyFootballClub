@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.service;
+package uk.co.myfootballclub.service.impl;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

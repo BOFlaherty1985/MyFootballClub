@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.service;
+package uk.co.myfootballclub.service.interfaces;
 
 /**
  * Description Here
@@ -7,7 +7,7 @@ package uk.co.myfootballclub.service;
  * @date Created on: 12/01/2015
  * @project MyFootballClub
  */
-public interface IRetrieveDataByString<T, Long> {
+public interface IRetrieveDataByString<T> {
 
     T retrieveDataByString(String input) throws Exception;
 

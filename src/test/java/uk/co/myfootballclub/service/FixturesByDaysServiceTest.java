@@ -18,6 +18,7 @@ import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
 import uk.co.myfootballclub.model.Fixture;
+import uk.co.myfootballclub.service.impl.FixturesByTeamService;
 
 import java.util.Date;
 import java.util.List;
@@ -57,7 +58,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     // assert that the method getFixturesByDays(int x) return is not null
     @Test
     public void assertThatGetFixturesByDaysMethodDoesNotReturnNull() throws InvalidFixtureTypeException {
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(new Fixture[1]);
 
@@ -68,12 +69,12 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     @Test
     public void verifyThatRestTemplateGetForObjectMethodHasBeenCalledOnceForObjectTypeString() throws InvalidFixtureTypeException {
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(new Fixture[1]);
 
         service.getFixturesByDays(563, "n", 1);
-        verify(restTemplate, times(1)).exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        verify(restTemplate, times(1)).exchange("http://www.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class);
 
     }
@@ -85,7 +86,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] json_array = new Fixture[1];
         json_array[0] = mockFixture("HomeTeam", null, 0, 0);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -101,7 +102,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         json_array[0] = mockFixture("HomeTeam", null, 0, 0);
         json_array[1] = mockFixture("HomeTeam2", null, 0, 0);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -116,7 +117,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] json_array = new Fixture[1];
         json_array[0] = mockFixture("HomeTeam1", null, 0, 0);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -133,7 +134,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] json_array = new Fixture[1];
         json_array[0] = mockFixture(null, "AwayTeam1", 0, 0);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -150,7 +151,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] json_array = new Fixture[1];
         json_array[0] = mockFixture(null, "AwayTeam1", 1, 0);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -167,7 +168,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] json_array = new Fixture[1];
         json_array[0] = mockFixture(null, "AwayTeam1", 0, 2);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -184,7 +185,7 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] json_array = new Fixture[1];
         json_array[0] = mockFixture(null, "AwayTeam1", 0, 2);
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=p1", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=p1", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(json_array);
 
@@ -214,11 +215,11 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] fixturesArray = new Fixture[1];
         fixturesArray[0] = new Fixture();
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/1/fixtures?timeFrame=n7", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/1/fixtures?timeFrame=n7", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(fixturesArray);
 
-        assertTrue("getTeamsNextFixture() return type is an instance of Fixture.", service.getTeamsNextFixture(1)
+        assertTrue("getTeamsNextFixture() return type is an instance of Fixture.", service.retrieveDataByInt(1)
                 instanceof Fixture);
     }
 
@@ -226,11 +227,11 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     public void verifyGetTeamsNextFixtureCallsRestTemplateForTeamWithID563() {
 
         when(responseEntity.getBody()).thenReturn(new Fixture[1]);
-        when(restTemplate.exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n7", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n7", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
 
-        service.getTeamsNextFixture(563);
-        verify(restTemplate, times(1)).exchange("http://www.football-data.org/teams/563/fixtures?timeFrame=n7", HttpMethod.GET,
+        service.retrieveDataByInt(563);
+        verify(restTemplate, times(1)).exchange("http://api.football-data.org/alpha/teams/563/fixtures?timeFrame=n7", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class);
 
     }
@@ -239,11 +240,11 @@ public class FixturesByDaysServiceTest extends ServiceTest {
     public void verifyGetTeamsNextFixtureCallsRestTemplateForTeamWithID568() {
 
         when(responseEntity.getBody()).thenReturn(new Fixture[1]);
-        when(restTemplate.exchange("http://www.football-data.org/teams/68/fixtures?timeFrame=n7", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/68/fixtures?timeFrame=n7", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
 
-        service.getTeamsNextFixture(68);
-        verify(restTemplate, times(1)).exchange("http://www.football-data.org/teams/68/fixtures?timeFrame=n7", HttpMethod.GET,
+        service.retrieveDataByInt(68);
+        verify(restTemplate, times(1)).exchange("http://api.football-data.org/alpha/teams/68/fixtures?timeFrame=n7", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class);
 
     }
@@ -254,11 +255,11 @@ public class FixturesByDaysServiceTest extends ServiceTest {
         Fixture[] fixtures = new Fixture[1];
         fixtures[0] = new Fixture();
 
-        when(restTemplate.exchange("http://www.football-data.org/teams/1/fixtures?timeFrame=n7", HttpMethod.GET,
+        when(restTemplate.exchange("http://api.football-data.org/alpha/teams/1/fixtures?timeFrame=n7", HttpMethod.GET,
                 mockRequestHeaders(), Fixture[].class)).thenReturn(responseEntity);
         when(responseEntity.getBody()).thenReturn(fixtures);
 
-        Fixture nextFixture = service.getTeamsNextFixture(1);
+        Fixture nextFixture = service.retrieveDataByInt(1);
         assertNotNull("NextFixture is not null", nextFixture);
     }
 

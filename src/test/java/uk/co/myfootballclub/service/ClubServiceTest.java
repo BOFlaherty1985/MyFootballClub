@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.Team;
+import uk.co.myfootballclub.service.impl.ClubService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -41,9 +42,9 @@ public class ClubServiceTest extends ServiceTest {
     private RestTemplate restTemplate;
 
     @Mock
-    ResponseEntity<Team> responseEntity = new ResponseEntity<Team>(HttpStatus.OK);
+    private ResponseEntity<Team> responseEntity = new ResponseEntity<Team>(HttpStatus.OK);
 
-    private static final String RESTFUL_URL = "http://www.football-data.org/teams/";
+    private static final String RESTFUL_URL = "http://api.football-data.org/teams/";
 
     @Before
     public void setUp() {
@@ -60,7 +61,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        Object result = clubService.retrieveFootballClubById(teamId);
+        Object result = clubService.retrieveDataByInt(teamId);
         assertNotNull("retrieveFootballClubById() must not return null.", result);
 
     }
@@ -75,7 +76,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        Object result = clubService.retrieveFootballClubById(teamId);
+        Object result = clubService.retrieveDataByInt(teamId);
         assertTrue("Returned object is instanceOf Team", result instanceof Team);
 
     }
@@ -90,7 +91,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        Team result = clubService.retrieveFootballClubById(teamId);
+        Team result = clubService.retrieveDataByInt(teamId);
         assertNotEquals("Result clubName must not be null.", null, result.getName());
 
     }
@@ -105,7 +106,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        Team result = clubService.retrieveFootballClubById(teamId);
+        Team result = clubService.retrieveDataByInt(teamId);
         assertNotEquals("Result clubCrest must not be null.", null, result.getCrestUrl());
 
     }
@@ -120,7 +121,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        clubService.retrieveFootballClubById(teamId);
+        clubService.retrieveDataByInt(teamId);
         verify(restTemplate, times(1)).exchange(format("%s%s", RESTFUL_URL, teamId)
                 , HttpMethod.GET, mockRequestHeaders(), Team.class);
 
@@ -136,7 +137,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        Team result = clubService.retrieveFootballClubById(teamId);
+        Team result = clubService.retrieveDataByInt(teamId);
         assertEquals(aFootballTeam.getName(), result.getName());
 
     }
@@ -151,7 +152,7 @@ public class ClubServiceTest extends ServiceTest {
         mockResponseEntityBody(aFootballTeam);
         mockRestTemplateReturn(RESTFUL_URL, teamId);
 
-        Team result = clubService.retrieveFootballClubById(teamId);
+        Team result = clubService.retrieveDataByInt(teamId);
         assertEquals(aFootballTeam.getCrestUrl(), result.getCrestUrl());
 
     }
@@ -161,14 +162,14 @@ public class ClubServiceTest extends ServiceTest {
 
         teamId = 66;
 
-        String teamCrestUrl = "http://www.football-data.org/teams/" + teamId;
+        String teamCrestUrl = "http://api.football-data.org/teams/" + teamId;
 
         mockResponseEntityBody(null);
         mockRestTemplateReturn(teamCrestUrl, teamId);
         when(restTemplate.exchange(teamCrestUrl, HttpMethod.GET, mockRequestHeaders(), Team.class))
                 .thenReturn(responseEntity);
 
-        clubService.retrieveFootballClubById(teamId);
+        clubService.retrieveDataByInt(teamId);
 
         verify(restTemplate, times(1)).exchange(teamCrestUrl, HttpMethod.GET, mockRequestHeaders(), Team.class);
 

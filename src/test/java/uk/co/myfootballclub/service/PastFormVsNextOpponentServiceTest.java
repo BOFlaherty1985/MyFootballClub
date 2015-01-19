@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.model.Fixture;
+import uk.co.myfootballclub.service.impl.PastFormVsNextOpponentService;
 
 import java.util.List;
 
@@ -115,9 +116,9 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
     @Test
     public void retrievePastFormAgainstNextOpponent_restTemplateCalled_threeTimesOnceForTheLastThreeYears() {
 
-        String rest_url_2014 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2014";
-        String rest_url_2013 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2013";
-        String rest_url_2012 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2012";
+        String rest_url_2014 = "http://api.football-data.org/alpha/alpha/teams/" + teamId + "/fixtures?season=2014";
+        String rest_url_2013 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2013";
+        String rest_url_2012 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2012";
 
         mockResponseBody(mockFixturesArray());
 
@@ -137,9 +138,9 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
 
         teamId = 563;
 
-        String rest_url_2014 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2014";
-        String rest_url_2013 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2013";
-        String rest_url_2012 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2012";
+        String rest_url_2014 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2014";
+        String rest_url_2013 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2013";
+        String rest_url_2012 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2012";
 
         mockResponseBody(mockFixturesArray());
 
@@ -158,9 +159,9 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
 
         teamId = 563;
 
-        String rest_url_2014 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2014";
-        String rest_url_2013 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2013";
-        String rest_url_2012 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2012";
+        String rest_url_2014 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2014";
+        String rest_url_2013 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2013";
+        String rest_url_2012 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2012";
 
         mockResponseBody(mockFixturesArray());
 
@@ -179,9 +180,9 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
 
         teamId = 563;
 
-        String rest_url_2014 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2014";
-        String rest_url_2013 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2013";
-        String rest_url_2012 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2012";
+        String rest_url_2014 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2014";
+        String rest_url_2013 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2013";
+        String rest_url_2012 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2015";
 
         mockResponseBody(mockFixturesArray());
 
@@ -198,9 +199,9 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
     @Test
     public void retrievePastFormAgainstNextOpponent_restTemplateCallTeamId_isEqualToInputParameter() {
 
-        String rest_url_2014 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2014";
-        String rest_url_2013 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2013";
-        String rest_url_2012 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2012";
+        String rest_url_2014 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2014";
+        String rest_url_2013 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2013";
+        String rest_url_2012 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2015";
 
         mockResponseBody(mockFixturesArray());
 
@@ -218,9 +219,9 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
     @Test
     public void retrievePastFormAgainstNextOpponent_returnedFixturesListSize_isEqualToRestTemplateResult() {
 
-        String rest_url_2014 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2014";
-        String rest_url_2013 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2013";
-        String rest_url_2012 = "http://www.football-data.org/teams/" + teamId + "/fixtures?season=2012";
+        String rest_url_2014 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2014";
+        String rest_url_2013 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2013";
+        String rest_url_2012 = "http://api.football-data.org/alpha/teams/" + teamId + "/fixtures?season=2012";
 
         mockResponseBody(mockFixturesArray());
 
@@ -229,7 +230,7 @@ public class PastFormVsNextOpponentServiceTest extends ServiceTest {
         mockRestTemplateExecution(rest_url_2012);
 
         List<Fixture> result = pastFormService.retrievePastFormAgainstNextOpponent(teamId, "HomeTeam1");
-        assertEquals("Fixture List size is equal to 3.", 3, result.size());
+        assertEquals("Fixture List size is equal to 2.", 2, result.size());
 
     }
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import uk.co.myfootballclub.model.league.LeagueRanking;
+import uk.co.myfootballclub.model.league.LeagueStanding;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,7 +45,7 @@ public class LeagueRankingDeserializerTest {
         when(jsonparser.getCodec()).thenReturn(objectCode);
         when(jsonparser.getCodec().readTree(jsonparser)).thenReturn(jsonNode);
 
-        List<LeagueRanking> leagueRanking = deserializer.deserialize(jsonparser, context);
+        List<LeagueStanding> leagueRanking = deserializer.deserialize(jsonparser, context);
         assertNotNull("Deserializer does not return a null object.", leagueRanking);
     }
 

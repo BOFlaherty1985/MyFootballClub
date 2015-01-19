@@ -6,7 +6,7 @@
     <div class="col-md-10">
         <p>
         <h3>
-            <b><c:out value="${leagueStandings.league}"/> Standings</b>
+            <b><c:out value="${leagueStandings.leagueCaption}"/> Standings</b>
         </h3>
         </p>
 
@@ -19,14 +19,14 @@
                 <th>GD</th>
                 <th>Points</th>
             </tr>
-            <c:forEach var="ranking" items="${leagueStandings.ranking}">
+            <c:forEach var="standing" items="${leagueStandings.standing}">
                 <tr>
-                    <td><c:out value="${ranking.rank}"/></td>
-                    <td id="team_${ranking.rank}"><c:out value="${ranking.team}"/></td>
-                    <td><c:out value="${ranking.goals}"/></td>
-                    <td><c:out value="${ranking.goalsAgainst}"/></td>
-                    <td><c:out value="${ranking.goalDifference}"/></td>
-                    <td><c:out value="${ranking.points}"/></td>
+                    <td><c:out value="${standing.position}"/></td>
+                    <td id="team_${standing.position}"><c:out value="${standing.teamName}"/></td>
+                    <td><c:out value="${standing.goals}"/></td>
+                    <td><c:out value="${standing.goalsAgainst}"/></td>
+                    <td><c:out value="${standing.goalDifference}"/></td>
+                    <td><c:out value="${standing.points}"/></td>
                 </tr>
             </c:forEach>
         </table>

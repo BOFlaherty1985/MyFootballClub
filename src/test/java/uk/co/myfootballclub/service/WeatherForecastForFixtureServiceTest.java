@@ -17,6 +17,7 @@ import uk.co.myfootballclub.model.Fixture;
 import uk.co.myfootballclub.model.weather.WeatherDetails;
 import uk.co.myfootballclub.model.weather.WeatherFixture;
 import uk.co.myfootballclub.model.weather.WeatherType;
+import uk.co.myfootballclub.service.impl.WeatherForecastForFixtureService;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

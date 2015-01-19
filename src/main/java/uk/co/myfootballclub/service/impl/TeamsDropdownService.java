@@ -1,10 +1,11 @@
-package uk.co.myfootballclub.service;
+package uk.co.myfootballclub.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import uk.co.myfootballclub.persistence.dao.TeamListRepository;
 import uk.co.myfootballclub.persistence.domain.TeamList;
+import uk.co.myfootballclub.service.interfaces.IDropdownService;
 
 import java.util.List;
 
@@ -16,13 +17,14 @@ import java.util.List;
  * @project MyFootballClub
  */
 @Service
-public class TeamsDropdownService {
+public class TeamsDropdownService implements IDropdownService<TeamList> {
 
     @Autowired
     private TeamListRepository teamListRepository;
 
-    public List<TeamList> retrieveListOfTeams(int leagueId) {
-        return teamListRepository.findByLeagueId(leagueId, new Sort(Sort.Direction.ASC, "teamDescription"));
+    @Override
+    public List<TeamList> retrieveDropdownListItems(int retrieveById) {
+        return teamListRepository.findByLeagueId(retrieveById, new Sort(Sort.Direction.ASC, "teamDescription"));
     }
 }
 

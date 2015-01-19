@@ -1,6 +1,8 @@
 package uk.co.myfootballclub.model.league;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import uk.co.myfootballclub.deserializer.LeagueRankingDeserializer;
 
@@ -16,17 +18,28 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class League {
 
-    private String league;
+    @JsonIgnore
+    @JsonProperty("_links")
+    private LeagueLink links;
+    private String leagueCaption;
     private int matchday;
     @JsonDeserialize(using = LeagueRankingDeserializer.class)
-    private List<LeagueRanking> ranking;
+    private List<LeagueStanding> standing;
 
-    public String getLeague() {
-        return league;
+    public LeagueLink getLinks() {
+        return links;
     }
 
-    public void setLeague(String league) {
-        this.league = league;
+    public void setLinks(LeagueLink links) {
+        this.links = links;
+    }
+
+    public String getLeagueCaption() {
+        return leagueCaption;
+    }
+
+    public void setLeagueCaption(String leagueCaption) {
+        this.leagueCaption = leagueCaption;
     }
 
     public int getMatchday() {
@@ -37,20 +50,22 @@ public class League {
         this.matchday = matchday;
     }
 
-    public List<LeagueRanking> getRanking() {
-        return ranking;
+    public List<LeagueStanding> getStanding() {
+        return standing;
     }
 
-    public void setRanking(List<LeagueRanking> ranking) {
-        this.ranking = ranking;
+    public void setStanding(List<LeagueStanding> standing) {
+        this.standing = standing;
     }
 
     @Override
     public String toString() {
         return "League{" +
-                "league='" + league + '\'' +
+                "links=" + links +
+                ", leagueCaption='" + leagueCaption + '\'' +
                 ", matchday=" + matchday +
-                ", ranking=" + ranking +
+                ", standing=" + standing +
                 '}';
     }
+
 }

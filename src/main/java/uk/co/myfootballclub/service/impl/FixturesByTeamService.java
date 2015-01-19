@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.service;
+package uk.co.myfootballclub.service.impl;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
 import uk.co.myfootballclub.model.Fixture;
+import uk.co.myfootballclub.service.interfaces.IFixtureService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +23,9 @@ import static java.lang.String.format;
  * @project MyFootballClub
  */
 @Service
-public class FixturesByTeamService extends AbstractService {
+public class FixturesByTeamService extends AbstractService implements IFixtureService {
 
-    private static final String FIXTURES_DATA_URL = "http://www.football-data.org/teams/";
+    private static final String FIXTURES_DATA_URL = "http://api.football-data.org/alpha/teams/";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -64,9 +65,10 @@ public class FixturesByTeamService extends AbstractService {
         return Arrays.asList(fixturesList);
     }
 
-    public Fixture getTeamsNextFixture(int teamId) {
+    @Override
+    public Fixture retrieveDataByInt(int input) {
 
-        ResponseEntity<Fixture[]> fixtureRequest = restTemplate.exchange(format("%s%s/fixtures?timeFrame=n7",FIXTURES_DATA_URL, teamId),
+        ResponseEntity<Fixture[]> fixtureRequest = restTemplate.exchange(format("%s%s/fixtures?timeFrame=n7",FIXTURES_DATA_URL, input),
                 HttpMethod.GET, generateRequestHeaders(), Fixture[].class);
 
         Fixture[] fixture = fixtureRequest.getBody();

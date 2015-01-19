@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.co.myfootballclub.exception.InvalidFixtureTypeException;
-import uk.co.myfootballclub.service.FixturesByTeamService;
+import uk.co.myfootballclub.service.impl.FixturesByTeamService;
 
 /**
  * Fixtures By Days Controller

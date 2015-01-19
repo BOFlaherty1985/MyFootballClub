@@ -1,4 +1,4 @@
-package uk.co.myfootballclub.service;
+package uk.co.myfootballclub.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.co.myfootballclub.exception.ClubNameIsNotValidException;
 import uk.co.myfootballclub.model.ClubDetails;
+import uk.co.myfootballclub.service.interfaces.IClubDetailsService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ import static java.lang.String.format;
  * @project MyFootballClub
  */
 @Component
-public class ClubDetailsService implements IRetrieveDataByString<ClubDetails, Long> {
+public class ClubDetailsService implements IClubDetailsService {
 
     private String CLUB_DETAILS_PATH = "/resources/teamdata/premierleague/";
 
@@ -41,7 +42,7 @@ public class ClubDetailsService implements IRetrieveDataByString<ClubDetails, Lo
         return clubDetails;
     }
 
-    protected InputStream retrieveJsonFileForClub(String clubName) {
+    public InputStream retrieveJsonFileForClub(String clubName) {
 
         String fileName = StringUtils.deleteWhitespace(clubName).toLowerCase();
 

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -15,6 +14,8 @@ import uk.co.myfootballclub.config.TestConfig;
 import uk.co.myfootballclub.config.WebInitializer;
 import uk.co.myfootballclub.exception.ClubNameIsNotValidException;
 import uk.co.myfootballclub.model.ClubDetails;
+import uk.co.myfootballclub.service.impl.ClubDetailsService;
+import uk.co.myfootballclub.service.interfaces.IClubDetailsService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +46,9 @@ public class ClubDetailsServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Mock
+    private IClubDetailsService iClubDetailsService;
+
     private InputStream inputStream;
 
     @Test
@@ -55,8 +59,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_typeOfObjectReturned_instanceOfClubDetails() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         when(objectMapper.readValue(inputStream, ClubDetails.class)).thenReturn(new ClubDetails());
 
@@ -68,8 +71,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_hasObjectMapperBeenCalled_Once() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         clubDetailsService.retrieveDataByString("clubName");
         verify(objectMapper, times(1)).readValue(inputStream, ClubDetails.class);
@@ -79,8 +81,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_ClubDetailsNickName_EqualsTheTesters() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         ClubDetails result = new ClubDetails();
         result.setClubNickname("The Testers");
@@ -97,8 +98,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_ClubDetailsFounded_Equals1900() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         ClubDetails result = new ClubDetails();
         result.setClubFounded("1900");
@@ -115,8 +115,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_ClubDetailsStadium_EqualsLondonStadium() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         ClubDetails result = new ClubDetails();
         result.setClubStadium("London Stadium");
@@ -133,8 +132,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_ClubDetailsStadiumCapacity_Equals20000() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         ClubDetails result = new ClubDetails();
         result.setClubCapacity("20,000");
@@ -151,8 +149,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_ClubDetailClubWebsite_EqualsGivenString() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         ClubDetails result = new ClubDetails();
         result.setClubWebsite("http://website.com");
@@ -169,8 +166,7 @@ public class ClubDetailsServiceTest {
     @Test
     public void retrieveClubDetails_ClubDetailFacebook_EqualsGivenString() throws Exception {
 
-        ClubDetailsService clubDetailsObj = Mockito.spy(new ClubDetailsService());
-        when(clubDetailsObj.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
+        when(iClubDetailsService.retrieveJsonFileForClub("clubName")).thenReturn(inputStream);
 
         ClubDetails result = new ClubDetails();
         result.setClubFacebook("http://facebook.com/myClub");
